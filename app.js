@@ -4,6 +4,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var exphbs = require('express-handlebars');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -13,7 +14,13 @@ var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// 配置模板引擎
+app.engine('html', exphbs.engine({
+  layoutsDir: 'views',
+  defaultLayout: 'layout',
+  extname: '.html'
+}));
+app.set('view engine', 'html');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -40,5 +47,10 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+app.listen(app.get('port'), function() {
+  console.log('Server is running on http://localhost:' + app.get('port') + '.\n');
+});
+
 
 module.exports = app;
