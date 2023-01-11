@@ -18,15 +18,15 @@ const detail = (type, id) => {
     return execSql(sql)
 }
 
-const register = (type, id, passwd, name, phone, figure, address, types, fprice) => {
+const register = (type, id, passwd, name, phone, address, fprice) => {
     let sql = `insert into ${type}`
     if (type === 'customer') {
         sql += `(cid, cname, passwd, phone, icon, address)`
         sql += ` values('${id}', '${name}', '${passwd}', '${phone}', NULL, '${address}');`
     }
     else if (type === 'vendor') {
-        sql += `(vid, vname, passwd, vpicture, grade, floor_price, types)`
-        sql += ` values('${id}', '${name}', '${passwd}', NULL, NULL, '${fprice}', '${types}');`
+        sql += `(vid, vname, passwd, vpicture, grade, floor_price)`
+        sql += ` values('${id}', '${name}', '${passwd}', NULL, NULL, '${fprice}');`
     }
     else{
         sql += `(rid, rname, passwd, phone)`

@@ -14,7 +14,7 @@ const execSql = (sql) => {
     // promise的作用？
     const promise = new Promise((resolve, reject) => {
         client.query(sql, (err, data) => {
-            console.log(sql)
+            // console.log(sql)
             if (err) {
                 reject(err)
                 return promise
