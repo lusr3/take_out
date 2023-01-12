@@ -1,4 +1,4 @@
-const { addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getHistory, confirm, comment, updataGrade, listVendors, detailVendor, updateSales } = require('../controller/customer')
+const { addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getHistory, confirm, comment, updataGrade, listVendors, detailVendor, updateSales, getPrice } = require('../controller/customer')
 const { currentTime } = require('../util/currentTime')
 const { detail } = require('../controller/user')
 
@@ -60,12 +60,33 @@ exports.detail = function(req, res) {
 }
 
 exports.add = function(req, res) {
-    const dname = req.query.dname
-    const cid = req.session._id
+    const dname = req.body.dname
+    // const cid = req.session._id
+    const cid = '哈哈哈'
     const promise = addDish(cid, dname)
+    let price
+    let tol_price
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
-            res.send('success')
+            return get_tol_price(cid)
+        }
+        else{
+            res.send('error')
+        }
+    })
+    .then((sqlData) => {
+        if (sqlData.rowCount) {
+            tol_price = sqlData.rows[0].sum
+            return getPrice(dname)
+        }
+        else{
+            res.send('error')
+        }
+    })
+    .then((sqlData) => {
+        if (sqlData.rowCount) {
+            price = sqlData.rows[0].price
+            res.send([{'dname' : dname, 'price' : price}, tol_price])
         }
         else{
             res.send('error')
