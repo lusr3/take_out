@@ -52,6 +52,8 @@ exports.detail = function(req, res) {
             res.render('list_vendor_dish', {
                 vname: vname,
                 dish_items: ret_data,
+                choose_items: [],
+                tol_price: 0,
                 fprice: fprice
             })
         }
@@ -62,9 +64,8 @@ exports.detail = function(req, res) {
 }
 
 exports.add = function(req, res) {
-    const dname = req.body.dname
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const dname = req.query.dname
+    const cid = req.session._id
     const promise = addDish(cid, dname)
     let price
     let tol_price
@@ -88,7 +89,11 @@ exports.add = function(req, res) {
     .then((sqlData) => {
         if (sqlData.rowCount) {
             price = sqlData.rows[0].price
-            res.send([{'dname' : dname, 'price' : price}, tol_price])
+            res.render('list_vendor_dish', {
+                dname: dname,
+                price: price,
+                tol_price: tol_price
+            })
         }
         else{
             res.send('error')
