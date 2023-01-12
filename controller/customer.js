@@ -10,8 +10,8 @@ const listVendors = () => {
 }
 
 
-const detail = (vname) => {
-    let sql = `select dname, dpicture, price, sale from dish 
+const detailVendor = (vname) => {
+    let sql = `select dname, dpicture, price, sale from dish
     where vid = (select vid from vendor where vname='${vname}' order by dname);`
     return execSql(sql)
 }
@@ -99,7 +99,7 @@ const updataGrade = (vid) => {
 
 module.exports = {
     listVendors,
-    detail,
+    detailVendor,
     addDish,
     deleteDish,
     get_tol_price,

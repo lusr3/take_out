@@ -1,19 +1,21 @@
-const { findPic } = require('../controller/user')
-const { detail, addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getHistory, confirm, comment, getVid, updataGrade, listVendors } = require('../controller/customer')
+const { addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getHistory, confirm, comment, getVid, updataGrade, listVendors, detailVendor } = require('../controller/customer')
 const { currentTime } = require('../util/currentTime')
+const { detail } = require('../controller/user')
 
 exports.index = function (req, res) {
     const type = req.session.type
     const _id = req.session._id
-    const promise = findPic(type, _id)
+    const promise = detail(type, _id)
     promise.then((sqlData) => {
         if (sqlData.rowCount > 0 && sqlData.rows[0].icon) {
             res.render('login/cus_index', {
-                filename: sqlData.rows[0].icon
+                filename: sqlData.rows[0].icon,
+                username: sqlData.rows[0].cname
             })
         } else {
             res.render('login/cus_index', {
-                filename: 'uploads/default.jpg'
+                filename: 'uploads/default.jpg',
+                username: sqlData.rows[0].cname
             })
         }
     })
@@ -35,7 +37,7 @@ exports.list = function(req, res) {
 
 exports.detail = function(req, res) {
     const vname = req.query.vname
-    const promise = detail(vname)
+    const promise = detailVendor(vname)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
             // 返回该商家的菜品信息 (dname, dpicture, price, sale)
@@ -49,8 +51,8 @@ exports.detail = function(req, res) {
 
 exports.add = function(req, res) {
     const dname = req.body.dname
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const cid = req.session._id
+    // const cid = '哈哈哈'
     const promise = addDish(cid, dname)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -65,8 +67,8 @@ exports.add = function(req, res) {
 
 exports.delete = function(req, res) {
     const dname = req.body.dname
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const cid = req.session._id
+    // const cid = '哈哈哈'
     const promise = deleteDish(cid, dname)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -79,8 +81,8 @@ exports.delete = function(req, res) {
 }
 
 exports.commit = function(req, res) {
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const cid = req.session._id
+    // const cid = '哈哈哈'
     let tol_price
     let orders
     const promise = get_tol_price(cid)
@@ -147,8 +149,8 @@ exports.commit = function(req, res) {
 }
 
 exports.history = function(req, res) {
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const cid = req.session._id
+    // const cid = '哈哈哈'
     const promise = getHistory(cid)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -167,8 +169,8 @@ exports.Gcomment = function(req, res) {
 }
 
 exports.Pcomment = function(req, res) {
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const cid = req.session._id
+    // const cid = '哈哈哈'
     const ttid = req.body.ttid
     const cwords = req.body.cwords
     const cpicture = req.body.cpicture

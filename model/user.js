@@ -93,8 +93,6 @@ exports.Plogin = function (req, res) {
 };
 
 exports.Glogin = function (req, res) {
-    console.log(req.session.username)
-    console.log(req.session.type)
     if (req.session.username) {
         if (req.session.type === 'customer') {
             res.redirect('/customer/index')
@@ -135,22 +133,26 @@ exports.Pupload = function(req, res, next){
 }
 
 exports.Gedit = function(req, res) {
-    // const type = req.session.type
-    // const name = req.session.username
-    const type = 'customer'
-    const name = 'lu sr'
-    const promise = detail(type, name)
+    const type = req.session.type
+    const _id = req.session._id
+    const promise = detail(type, _id)
     promise.then((sqlData) => {
-        // console.log('data', sqlData.rows[0])
-        // 根据type和data显示个人信息？
         if (sqlData.rowCount) {
-            res.json(
-                new SuccessModel(
-                    {
-                        type : type,
-                        data : sqlData.rows[0]
-                    }, '用户信息')
-            )
+            ret_data = {}
+            ret_data['phone'] = sqlData.rows[0].phone
+            ret_data['address'] = sqlData.rows[0].address
+            if (type === 'customer') {
+                ret_data['id'] = sqlData.rows[0].cid
+                ret_data['name'] = sqlData.rows[0].cname
+            } else if (type === 'vendor') {
+                ret_data['id'] = sqlData.rows[0].vid
+                ret_data['name'] = sqlData.rows[0].vname
+                ret_data['fprice'] = sqlData.rows[0].fprice
+            } else if (type === 'rider') {
+                ret_data['id'] = sqlData.rows[0].rid
+                ret_data['name'] = sqlData.rows[0].rname
+            }
+            res.render('edit', {data: ret_data})
         } else {
             res.json(
                 new ErrorModel({
@@ -163,23 +165,17 @@ exports.Gedit = function(req, res) {
 };
 
 exports.Pedit = function(req, res) {
-    // const type = req.session.type
-    // const _id = req.session._id
-    const type = 'rider'
-    const _id = 'test'
+    const type = req.session.type
+    const _id = req.session._id
     const passwd = md5(req.body.passwd)
     const name = req.body.name
     const phone = req.body.phone
-    const icon = req.body.icon
     const address = req.body.address
     const fprice = req.body.fprice
-    const promise = edit(type, _id, passwd, name, phone, icon, address, fprice)
+    const promise = edit(type, _id, passwd, name, phone, address, fprice)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
-            // 这里改成回到主页？
-            let temp = '<script>alert("修改成功"); window.location.href = /' + type + '/index; </script>'
-            res.send(temp)
-            // res.send('<script>alert("修改成功"); window.location.href = "/user/login"; </script>');
+            res.send('<script>alert("修改成功"); window.location.href = "/user/login"; </script>');
         } else {
             res.send('<script>alert("您提供的信息不完整"); window.location.href = "/user/edit"; </script>');
         }
