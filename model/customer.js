@@ -25,10 +25,6 @@ exports.list = function(req, res) {
     const promise = listVendors()
     // 每个商家信息为(vname, icon, grade, floor_price)
     promise.then((sqlData) => {
-<<<<<<< HEAD
-=======
-        // console.log(sqlData)
->>>>>>> 512619a0ac79793c4ffe93df1b8b352d54b3f160
         if (sqlData.rowCount) {
             res.render('list_vendor', {
                 items: sqlData.rows
@@ -64,9 +60,8 @@ exports.detail = function(req, res) {
 }
 
 exports.add = function(req, res) {
-    const dname = req.body.dname
+    const dname = req.query.dname
     const cid = req.session._id
-    // const cid = '哈哈哈'
     const promise = addDish(cid, dname)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -76,7 +71,6 @@ exports.add = function(req, res) {
             res.send('error')
         }
     })
-
 }
 
 exports.delete = function(req, res) {

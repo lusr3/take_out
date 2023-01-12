@@ -11,19 +11,12 @@ let client
 
 if (env === 'dev') {
     client = new Client({
-        host: '192.168.134.131',
+        host: '172.18.198.208',
         port: '15432',
         database: 'take_out',
-        user: 'lwyyds', 
-        password: 'lw@123456'
+        user: 'jonas',
+        password: '1234@abc'
     })
-    // client = new Client({
-    //     host: '172.18.198.208',
-    //     port: '15432',
-    //     database: 'take_out',
-    //     user: 'jonas',
-    //     password: '1234@abc'
-    // })
     REDIS_CONF = {
         host: '127.0.0.1',
         port: '6379'
