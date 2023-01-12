@@ -20,8 +20,9 @@ const deleteDish = (dname) => {
     return execSql(sql)
 }
 
-const task = (vid) => {
-    
+const getTask = (vid) => {
+    let sql = `select * from task where vid='${vid}' order by status asc, createtime desc;`
+    return execSql(sql)
 }
 
 
@@ -29,5 +30,5 @@ module.exports = {
     list,
     addDish,
     deleteDish,
-    task
+    getTask
 }

@@ -25,25 +25,25 @@ const addDish = (cid, dname) => {
 }
 
 const deleteDish = (cid, dname) => {
-    let sql = `delete from ttemp where did = 
+    let sql = `delete from ttemp where did =
     (select did from dish where dname='${dname}' and cid='${cid}');`
     return execSql(sql)
 }
 
-const addTask = (cid, tol_price, createtime) => {
-    let sql = `insert into task(cid, tol_price, status, createtime) 
-    values('${cid}', '${tol_price}', '0', '${createtime}');`
+const addTask = (cid, tol_price, vid, createtime) => {
+    let sql = `insert into task(cid, tol_price, vid, status, createtime)
+    values('${cid}', '${tol_price}', '${vid}', '0', '${createtime}');`
     return execSql(sql)
 }
 
 const get_tol_price = (cid) => {
-    let sql = `select sum(price) from dish where did in 
+    let sql = `select sum(price) from dish where did in
     (select did from ttemp where cid='${cid}');`
     return execSql(sql)
 }
 
 const get_ttid = (cid) => {
-    let sql = `select ttid from task where cid='${cid}';`
+    let sql = `select ttid from task where cid='${cid}' and status='0';`
     return execSql(sql)
 }
 
@@ -71,12 +71,12 @@ const addHistory = (data) => {
 }
 
 const getHistory = (cid) => {
-    let sql = `select * from task where cid='${cid}' order by status desc, createtime asc;`
+    let sql = `select * from task where cid='${cid}' order by status asc, createtime desc;`
     return execSql(sql)
 }
 
 const comment = (cid, ttid, vid, cwords, cpicture, commenttime, grade) => {
-    let sql = `insert into comments(cid, ttid, vid, cwords, cpicture, commenttime, grade) 
+    let sql = `insert into comments(cid, ttid, vid, cwords, cpicture, commenttime, grade)
     values('${cid}', '${ttid}', '${vid}', '${cwords}', '${cpicture}','${commenttime}', '${grade}');`
     return execSql(sql)
 }
@@ -92,7 +92,7 @@ const confirm = (ttid, finishtime) => {
 }
 
 const updataGrade = (vid) => {
-    let sql = `update vendor set grade = 
+    let sql = `update vendor set grade =
     (select avg(grade) from comments where vid='${vid}') where vid='${vid}';`
     return execSql(sql)
 }

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>外卖系统首页</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+    <ul>
+        <div class="container">
+            <% items.forEach(function(item){%>
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <img src="http://localhost:3000/<%= item.icon %>" alt="..." width="200" height="200">
+                        <div class="caption text-center">
+                            <h3><%= item.vname %></h3>
+                            <p>起送价：<%= item.floor_price %></p>
+                            <p><a href="#" class="btn btn-primary" role="button" method="get">点击查看详情</a></p>
+                        </div>
+                    </div>
+                </div>
+                <% }) %>
+            </div>
+    </ul>
+</body>
+<script src="/javascripts/jquery.min.js"></script>
+<script src="/javascripts/jquery.cookie.js"></script>
+<script src="/javascripts/bootstrap.min.js"></script>
+<script src="/javascripts/common.js"></script>
+</html>

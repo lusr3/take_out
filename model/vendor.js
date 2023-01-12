@@ -1,4 +1,4 @@
-const {list, addDish, deleteDish, task} = require('../controller/vendor')
+const {list, addDish, deleteDish, getTask} = require('../controller/vendor')
 
 const { detail } = require('../controller/user')
 
@@ -46,7 +46,7 @@ exports.Padd = function(req, res) {
     const dname = req.body.dname
     const dpicture = req.body.dpicture
     const price = req.body.price
-    const promise = add(dname, dpicture, price, vid)
+    const promise = addDish(dname, dpicture, price, vid)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
             res.send('<script>alert("添加成功"); window.location.href = "/vendor/list"; </script>')
@@ -72,5 +72,15 @@ exports.delete = function(req, res) {
 }
 
 exports.task = function(req, res) {
-    
+    // const vid = req.session._id
+    const vid = 'lwyyds'
+    const promise = getTask(vid)
+    promise.then((sqlData) => {
+        if (sqlData.rowCount) {
+            res.send(sqlData.rows)
+        }
+        else{
+            res.send('no tasks')
+        }
+    })
 }
