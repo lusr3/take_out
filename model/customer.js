@@ -65,5 +65,6 @@ exports.delete = function(req, res) {
 }
 
 exports.commit = function(req, res) {
-    
+    // const cid = req.session.uid
+    const cid = 'test1'
 }

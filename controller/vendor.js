@@ -11,7 +11,7 @@ const list = (vid) => {
 
 const add = (dname, dpicture, price, sale, vid) => {
     let sql = `insert into dish(dname, price, sale, vid, dpicture)
-     values('${dname}', '${price}', '${sale}', '${vid}', NULL);`
+     values('${dname}', '${price}', '${sale}', '${vid}', '${dpicture}');`
     //  console.log(sql)
     return execSql(sql)
 }
