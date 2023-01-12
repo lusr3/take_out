@@ -1,8 +1,9 @@
 var express = require('express');
 var md5 = require('md5');
-const { detail, register, edit, login } = require('../controller/user')
+const { execSql } = require('../exec/execSql');
 const { SuccessModel, ErrorModel } = require('../model/resModel')
 const { currentTime } = require('../util/currentTime')
+const { detail, register, edit, login, insertPic} = require('../controller/user')
 
 exports.Pregister = function (req, res) {
     const type = req.body.type
@@ -12,7 +13,6 @@ exports.Pregister = function (req, res) {
     const phone = req.body.phone
     const address = req.body.address
     const fprice = req.body.fprice
-    console.log('register', req.body)
     const promise = register(type, id, passwd, name, phone, address, fprice)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -50,7 +50,6 @@ exports.Plogin = function (req, res) {
     const id = req.body.id
     const passwd = md5(req.body.passwd)
     const promise = login(type, id, passwd)
-    console.log(id, passwd, type)
     promise.then((sqlData) => {
         if (sqlData.rowCount > 0) {
             // res.json(
@@ -111,9 +110,7 @@ exports.Glogin = function (req, res) {
 
 exports.Glogout = function (req, res) {
     res.clearCookie('token');
-    console.log(req.session)
     req.session.destroy();
-    console.log(req.session)
     res.redirect('/user/login');
 }
 
@@ -128,24 +125,20 @@ exports.Pupload = function(req, res, next){
     const promise = insertPic(type, _id, filepath)
     promise.then((sqlData) => {
         if (type === 'customer') {
-            res.render('login/cus_index', {
-                filename: filepath
-            })
+            res.redirect('/customer/index')
         } else if (type === 'vendor') {
-            res.render('login/ven_index', {
-                filename: filepath
-            })
+            res.redirect('/vendor/index')
         } else if (type === 'rider') {
-            res.render('login/rid_index', {
-                filename: filepath
-            })
+            res.redirect('/rider/index')
         }
     })
 }
 
 exports.Gedit = function(req, res) {
-    const type = req.session.type
-    const name = req.session.username
+    // const type = req.session.type
+    // const name = req.session.username
+    const type = 'customer'
+    const name = 'lu sr'
     const promise = detail(type, name)
     promise.then((sqlData) => {
         // console.log('data', sqlData.rows[0])
@@ -170,16 +163,17 @@ exports.Gedit = function(req, res) {
 };
 
 exports.Pedit = function(req, res) {
-    const type = req.session.type
-    const id = req.body.id
-    const passwd = req.body.passwd
+    // const type = req.session.type
+    // const _id = req.session._id
+    const type = 'rider'
+    const _id = 'test'
+    const passwd = md5(req.body.passwd)
     const name = req.body.name
     const phone = req.body.phone
-    const figure = req.body.figure
+    const icon = req.body.icon
     const address = req.body.address
-    const types = req.body.types
     const fprice = req.body.fprice
-    const promise = edit(type, id, passwd, name, phone, figure, address, types, fprice)
+    const promise = edit(type, _id, passwd, name, phone, icon, address, fprice)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
             // 这里改成回到主页？

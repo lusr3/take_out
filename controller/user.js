@@ -35,18 +35,18 @@ const register = (type, id, passwd, name, phone, address, fprice) => {
     return execSql(sql)
 }
 
-const edit = (type, id, passwd, name, phone, figure, address, fprice) => {
+const edit = (type, id, passwd, name, phone, icon, address, fprice) => {
     let sql = `update ${type} set `
     if (type === 'customer') {
-        sql += `passwd='${passwd}', cname='${name}', phone='${phone}', icon=NULL, address='${address}' `
+        sql += `passwd='${passwd}', cname='${name}', phone='${phone}', icon='${icon}', address='${address}' `
         sql += `where cid='${id}';`
     }
     else if (type === 'vendor') {
-        sql += `passwd='${passwd}', vname='${name}', icon=NULL, floor_price='${fprice}' `
+        sql += `passwd='${passwd}', vname='${name}', icon='${icon}', floor_price='${fprice}' `
         sql += `where vid='${id}';`
     }
     else{
-        sql += `passwd='${passwd}', rname='${name}', phone='${phone}, icon=NULL' `
+        sql += `passwd='${passwd}', rname='${name}', phone='${phone}', icon='${icon}' `
         sql += `where rid='${id}';`
     }
     return execSql(sql)
