@@ -94,34 +94,6 @@ const insertPic = (type, id, filepath) => {
     return execSql(sql)
 }
 
-const findPic = (type, id) => {
-    let sql = `select icon from ${type} `
-    if (type === 'customer') {
-        sql += `where cid='${id}';`
-    }
-    else if (type === 'vendor') {
-        sql += `where vid='${id}';`
-    }
-    else{
-        sql += `where rid='${id}';`
-    }
-    return execSql(sql)
-}
-
-const insertPic = (type, id, filepath) => {
-    let sql = `update ${type} set `
-    if (type === 'customer') {
-        sql += `icon = '${filepath}' where cid = '${id}';`
-    }
-    else if (type === 'vendor') {
-        sql += `icon ='${filepath}' where vid ='${id}';`
-    } else {
-        sql += `icon = '${filepath}' where rid = '${id}';`
-    }
-
-    return execSql(sql)
-}
-
 module.exports = {
     register,
     edit,
