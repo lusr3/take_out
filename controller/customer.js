@@ -108,6 +108,11 @@ const updateSales = (data) => {
     return execSql(sql)
 }
 
+const getPrice = (dname) => {
+    let sql = `select price from dish where dname='${dname}';`
+    return execSql(sql)
+}
+
 module.exports = {
     listVendors,
     detailVendor,
@@ -124,5 +129,6 @@ module.exports = {
     getVid,
     confirm,
     updataGrade,
-    updateSales
+    updateSales,
+    getPrice
 }
