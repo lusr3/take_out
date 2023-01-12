@@ -1,10 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var user = require('../model/user');
-var multipart = require('connect-multiparty');
-var multipartMiddleware = multipart();
 var multer = require('multer');
-// const upload = multer({ dest: '/uploads' })
 
 const storage = multer.diskStorage({
     // destination:'public/uploads/'+new Date().getFullYear() + (new Date().getMonth()+1) + new Date().getDate(),
@@ -15,8 +12,8 @@ const storage = multer.diskStorage({
       const filenameArr = file.originalname.split('.');
       cb(null,Date.now() + '.' + filenameArr[filenameArr.length-1]);
     }
-  });
-  const upload = multer({storage});
+});
+const upload = multer({storage});
 
 
 /* user */
