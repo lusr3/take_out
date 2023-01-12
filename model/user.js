@@ -53,14 +53,22 @@ exports.Plogin = function (req, res) {
     console.log(id, passwd, type)
     promise.then((sqlData) => {
         if (sqlData.rowCount > 0) {
+            // res.json(
+            //     new SuccessModel({
+            //         tip: '登录成功',
+            //         updateTime: currentTime()
+            //     }, '用户登录')
+            // )
             req.session.type = type
-            req.session.uid = id
             if (type === 'customer') {
                 req.session.username = sqlData.rows[0].cname
+                req.session._id = sqlData.rows[0].cid
             } else if (type === 'vendor') {
                 req.session.username = sqlData.rows[0].vname
+                req.session._id = sqlData.rows[0].vid
             } else if (type === 'rider') {
                 req.session.username = sqlData.rows[0].rname
+                req.session._id = sqlData.rows[0].rid
             }
 
             res.cookie('token', 888888, {maxAge: 1000 * 60 * 60 * 24 * 7})
@@ -109,6 +117,32 @@ exports.Glogout = function (req, res) {
     res.redirect('/user/login');
 }
 
+exports.Gupload = function (req, res) {
+    res.render('upload')
+}
+
+exports.Pupload = function(req, res, next){
+    const type = req.session.type;
+    const _id = req.session._id
+    const filepath = 'uploads/' + req.file.filename
+    const promise = insertPic(type, _id, filepath)
+    promise.then((sqlData) => {
+        if (type === 'customer') {
+            res.render('login/cus_index', {
+                filename: filepath
+            })
+        } else if (type === 'vendor') {
+            res.render('login/ven_index', {
+                filename: filepath
+            })
+        } else if (type === 'rider') {
+            res.render('login/rid_index', {
+                filename: filepath
+            })
+        }
+    })
+}
+
 exports.Gedit = function(req, res) {
     const type = req.session.type
     const name = req.session.username
@@ -119,7 +153,7 @@ exports.Gedit = function(req, res) {
         if (sqlData.rowCount) {
             res.json(
                 new SuccessModel(
-                    {   
+                    {
                         type : type,
                         data : sqlData.rows[0]
                     }, '用户信息')
