@@ -7,13 +7,13 @@ const { execSql } = require('../exec/execSql')
 const detail = (type, id) => {
     let sql = `select * from ${type} `
     if (type === 'customer') {
-        sql += `where cid='${id}';`
+        sql += `where cname='${id}';`
     }
     else if (type === 'vendor') {
-        sql += `where vid='${id}';`
+        sql += `where vname='${id}';`
     }
     else{
-        sql += `where rid='${id}';`
+        sql += `where rname='${id}';`
     }
     return execSql(sql)
 }
@@ -26,7 +26,7 @@ const register = (type, id, passwd, name, phone, address, fprice) => {
     }
     else if (type === 'vendor') {
         sql += `(vid, vname, passwd, vpicture, grade, floor_price)`
-        sql += ` values('${id}', '${name}', '${passwd}', NULL, NULL, '${fprice}');`
+        sql += ` values('${id}', '${name}', '${passwd}', NULL, 0, '${fprice}');`
     }
     else{
         sql += `(rid, rname, passwd, phone)`
@@ -35,32 +35,18 @@ const register = (type, id, passwd, name, phone, address, fprice) => {
     return execSql(sql)
 }
 
-const editUser = (type, id, passwd, name, phone, figure, address, types, fprice) => {
+const edit = (type, id, passwd, name, phone, figure, address, fprice) => {
     let sql = `update ${type} set `
     if (type === 'customer') {
         sql += `passwd='${passwd}', cname='${name}', phone='${phone}', icon=NULL, address='${address}' `
         sql += `where cid='${id}';`
     }
     else if (type === 'vendor') {
-        sql += `passwd='${passwd}', vname='${name}', vpicture=NULL, floor_price='${fprice}', types='${types}' `
+        sql += `passwd='${passwd}', vname='${name}', vpicture=NULL, floor_price='${fprice}' `
         sql += `where vid='${id}';`
     }
     else{
         sql += `passwd='${passwd}', rname='${name}', phone='${phone}' `
-        sql += `where rid='${id}';`
-    }
-    return execSql(sql)
-}
-
-const deleteUser = (type, id) => {
-    let sql = `delete from ${type} `
-    if (type === 'customer') {
-        sql += `where cid='${id}';`
-    }
-    else if (type === 'vendor') {
-        sql += `where vid='${id}';`
-    }
-    else{
         sql += `where rid='${id}';`
     }
     return execSql(sql)
@@ -82,8 +68,7 @@ const login = (type, id, passwd) => {
 
 module.exports = {
     register,
-    editUser,
-    deleteUser,
+    edit,
     login,
     detail
 }

@@ -10,6 +10,13 @@ let REDIS_CONF
 let client
 
 if (env === 'dev') {
+    // client = new Client({
+    //     host: '192.168.134.131',
+    //     port: '15432',
+    //     database: 'db_test',
+    //     user: 'lwyyds',
+    //     password: 'lw@123456'
+    // })
     client = new Client({
         host: '172.18.198.208',
         port: '15432',
