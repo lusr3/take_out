@@ -41,7 +41,7 @@ exports.Gadd = function(req, res) {
 
 exports.Padd = function(req, res) {
     // const vid = req.session.uid
-    const vid = 'test1'
+    const vid = 'test'
     const dname = req.body.dname
     const dpicture = req.body.dpicture
     const price = req.body.price

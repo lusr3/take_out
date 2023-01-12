@@ -69,7 +69,7 @@ const login = (type, id, passwd) => {
 // const findPic_and_User = (type, id) => {
 //     // let sql = `select icon from ${type} `
 //     let sql = 'select icon, '
-//     if (type === 'customer') {
+//     if (type === 'customer') {,
 //         sql += 'cname'
 //         sql += `where cid='${id}';`
 //     }
