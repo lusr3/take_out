@@ -86,7 +86,7 @@ const insertPic = (type, id, filepath) => {
         sql += `icon = '${filepath}' where cid = '${id}';`
     }
     else if (type === 'vendor') {
-        sql += `vpicture ='${filepath}' where vid ='${id}';`
+        sql += `icon ='${filepath}' where vid ='${id}';`
     } else {
         sql += `icon = '${filepath}' where rid = '${id}';`
     }
