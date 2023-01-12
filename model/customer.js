@@ -1,4 +1,4 @@
-const { addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getHistory, confirm, comment, updataGrade, listVendors, detailVendor, updateSales, getPrice } = require('../controller/customer')
+const { addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getHistory, confirm, comment, updataGrade, listVendors, detailVendor, updateSales, getDishs } = require('../controller/customer')
 const { currentTime } = require('../util/currentTime')
 const { detail } = require('../controller/user')
 
@@ -64,7 +64,6 @@ exports.add = function(req, res) {
     // const cid = req.session._id
     const cid = '哈哈哈'
     const promise = addDish(cid, dname)
-    let price
     let tol_price
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -77,7 +76,7 @@ exports.add = function(req, res) {
     .then((sqlData) => {
         if (sqlData.rowCount) {
             tol_price = sqlData.rows[0].sum
-            return getPrice(dname)
+            return getDishs(cid)
         }
         else{
             res.send('error')
@@ -85,8 +84,7 @@ exports.add = function(req, res) {
     })
     .then((sqlData) => {
         if (sqlData.rowCount) {
-            price = sqlData.rows[0].price
-            res.send([{'dname' : dname, 'price' : price}, tol_price])
+            res.send([sqlData.rows, tol_price])
         }
         else{
             res.send('error')
@@ -96,16 +94,34 @@ exports.add = function(req, res) {
 
 exports.delete = function(req, res) {
     const dname = req.body.dname
-    const cid = req.session._id
-    // const cid = '哈哈哈'
+    // const cid = req.session._id
+    const cid = '哈哈哈'
     const promise = deleteDish(cid, dname)
+    let tol_price
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
-            res.send('succes')
+            return get_tol_price(cid)
         }
         else{
             res.send('error')
         }
+    })
+    .then((sqlData) => {
+        if (sqlData.rowCount) {
+            if (sqlData.rows[0].sum != null) {
+                tol_price = sqlData.rows[0].sum
+            }
+            else{
+                tol_price = 0
+            }
+            return getDishs(cid)
+        }
+        else{
+            res.send('error')
+        }
+    })
+    .then((sqlData) => {
+        res.send([sqlData.rows, tol_price])
     })
 }
 
