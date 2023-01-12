@@ -38,6 +38,7 @@ exports.list = function(req, res) {
 
 exports.detail = function(req, res) {
     const vname = req.query.vname
+    const fprice = req.query.fprice
     const promise = detailVendor(vname)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -50,7 +51,8 @@ exports.detail = function(req, res) {
             }
             res.render('list_vendor_dish', {
                 vname: vname,
-                items: ret_data
+                dish_items: ret_data,
+                fprice: fprice
             })
         }
         else{
@@ -218,18 +220,22 @@ exports.history = function(req, res) {
 }
 
 exports.Gcomment = function(req, res) {
-    res.send('评论表单')
+    const ttid = req.query.ttid
+    const vid = req.query.vid
+    res.render('comment_dish', {
+        ttid: ttid,
+        vid: vid
+    })
 }
 
 exports.Pcomment = function(req, res) {
     const cid = req.session._id
     // const cid = '哈哈哈'
-    const ttid = req.body.ttid
-    const vid = req.body.vid
+    const ttid = req.query.ttid
+    const vid = req.query.vid
     const cwords = req.body.cwords
-    const cpicture = req.body.cpicture
     const grade = req.body.grade
-    const promise = comment(cid, ttid, vid, cwords, cpicture, currentTime(), grade)
+    const promise = comment(cid, ttid, vid, cwords, currentTime(), grade)
     // 新增评价后更新商家评分
     promise.then((sqlData) => {
         if (sqlData.rowCount) {

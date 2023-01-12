@@ -10,28 +10,35 @@
 <body>
     <div class="col-md-9">
     <ul>
-        <!-- <div class="container"> -->
-            <% items.forEach(function(item){%>
-            <div class="col-sm-6 col-md-4">
-                <div class="thumbnail">
-                    <img src="http://localhost:3000/<%= item.dpicture %>" alt="..." width="200" height="200">
-                    </a>
-                    <div class="caption text-center">
-                        <h3><%= item.dname %></h3>
-                        <p>价格：<%= item.price %></p>
-                        <p>销量：<%= item.sale %></p>
-                        <p><a href="/customer/detail/add?dname=<%= item.dname %>" class="btn btn-primary" role="button">+</a>
-                            <a href="/customer/detail/delete?dname=<%= item.dname %>" class="btn btn-default" role="button">-</a>
-                        </p>
-                    </div>
+        <% dish_items.forEach(function(item){%>
+        <div class="col-sm-6 col-md-4">
+            <div class="thumbnail">
+                <img src="http://localhost:3000/<%= item.dpicture %>" alt="..." width="200" height="200">
+                </a>
+                <div class="caption text-center">
+                    <h3><%= item.dname %></h3>
+                    <p>价格：<%= item.price %></p>
+                    <p>销量：<%= item.sale %></p>
+                    <p><a href="/customer/detail/add?dname=<%= item.dname %>" class="btn btn-primary" role="button">+</a>
+                        <a href="/customer/detail/delete?dname=<%= item.dname %>" class="btn btn-default" role="button">-</a>
+                    </p>
                 </div>
             </div>
-            <% }) %>
-        <!-- </div> -->
+        </div>
+        <% }) %>
     </ul>
     </div>
     <div class="col-md-3">
         <h2>已选的菜品</h2>
+        <ul>
+            <% var idx = 0; %>
+            <% for(var i in choose_items){ %>
+                <% idx = idx + 1; %>
+                <p>菜品 <%= idx %>：<%= choose_items[i].dname %> —— <%= choose_items[i].price %>元</p>
+            <% } %>
+        </ul>
+        <p><strong>总价：<%= total_price %>元</strong></p>
+        <p><strong>起送价：<%= fprice %>元</strong></p>
     </div>
 
 </body>
