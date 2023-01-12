@@ -9,7 +9,7 @@ const list = (vid) => {
     return execSql(sql)
 }
 
-const add = (dname, price, vid) => {
+const addDish = (dname, price, vid) => {
     let sql = `insert into dish(dname, price, sale, vid)
      values('${dname}', '${price}', 0, '${vid}');`
     return execSql(sql)
@@ -26,15 +26,17 @@ const insertDishPic = (name, filepath) => {
     return execSql(sql)
 }
 
-const task = () => {
 
+const getTask = (vid) => {
+    let sql = `select * from task where vid='${vid}' order by status asc, createtime desc;`
+    return execSql(sql)
 }
 
 
 module.exports = {
     list,
-    add,
+    addDish,
     deleteDish,
-    task,
-    insertDishPic
+    insertDishPic,
+    getTask
 }

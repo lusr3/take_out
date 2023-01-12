@@ -9,7 +9,6 @@ const listVendors = () => {
     return execSql(sql)
 }
 
-
 const detailVendor = (vname) => {
     let sql = `select dname, dpicture, price, sale from dish
     where vid = (select vid from vendor where vname='${vname}') order by dname;`
@@ -30,9 +29,9 @@ const deleteDish = (cid, dname) => {
     return execSql(sql)
 }
 
-const addTask = (cid, tol_price, createtime) => {
-    let sql = `insert into task(cid, tol_price, status, createtime)
-    values('${cid}', '${tol_price}', '0', '${createtime}');`
+const addTask = (cid, tol_price, vid, createtime) => {
+    let sql = `insert into task(cid, tol_price, vid, status, createtime)
+    values('${cid}', '${tol_price}', '${vid}', '0', '${createtime}');`
     return execSql(sql)
 }
 
@@ -43,7 +42,7 @@ const get_tol_price = (cid) => {
 }
 
 const get_ttid = (cid) => {
-    let sql = `select ttid from task where cid='${cid}';`
+    let sql = `select ttid from task where cid='${cid}' and status='0';`
     return execSql(sql)
 }
 
@@ -71,7 +70,7 @@ const addHistory = (data) => {
 }
 
 const getHistory = (cid) => {
-    let sql = `select * from task where cid='${cid}' order by status desc, createtime asc;`
+    let sql = `select * from task where cid='${cid}' order by status asc, createtime desc;`
     return execSql(sql)
 }
 
@@ -97,6 +96,18 @@ const updataGrade = (vid) => {
     return execSql(sql)
 }
 
+const updateSales = (data) => {
+    let sql = `update dish set sale=sale+1 where did in (`
+    for (var key in data) {
+        if (key != 0) {
+            sql += `, `
+        }
+        sql += `'${data[key].did}'`
+    }
+    sql += `);`
+    return execSql(sql)
+}
+
 module.exports = {
     listVendors,
     detailVendor,
@@ -112,5 +123,6 @@ module.exports = {
     comment,
     getVid,
     confirm,
-    updataGrade
+    updataGrade,
+    updateSales
 }

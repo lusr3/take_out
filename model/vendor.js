@@ -1,4 +1,4 @@
-const {list, add, deleteDish, task, insertDishPic} = require('../controller/vendor')
+const {list, addDish, deleteDish, getTask, insertDishPic} = require('../controller/vendor')
 
 const { detail } = require('../controller/user')
 
@@ -22,8 +22,9 @@ exports.index = function (req, res) {
 };
 
 exports.list = function(req, res) {
-    const _id = req.session._id
-    const promise = list(_id)
+    const vid = req.session._id
+    // const vid = 'lwyyds'
+    const promise = list(vid)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
             // 返回数据是列表 (dname, dpicture, price, sale)
@@ -51,13 +52,13 @@ exports.Padd = function(req, res) {
     const _id = req.session._id
     const dname = req.body.dname
     const price = req.body.price
-    const promise = add(dname, price, _id)
+    const promise = addDish(dname, price, _id)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
             res.send('<script>alert("添加成功"); window.location.href = "/vendor/list"; </script>')
         }
         else{
-            res.send('<script>alert("您提供的信息不完整"); window.location.href = "/vendor/add"; </script>')
+            res.send('error')
         }
     })
 }
@@ -92,5 +93,19 @@ exports.Pupload = function(req, res, next){
     const promise = insertDishPic(dishname, filepath)
     promise.then((sqlData) => {
         res.redirect('/vendor/list')
+    })
+}
+
+exports.task = function(req, res) {
+    const vid = req.session._id
+    // const vid = 'lwyyds'
+    const promise = getTask(vid)
+    promise.then((sqlData) => {
+        if (sqlData.rowCount) {
+            res.send(sqlData.rows)
+        }
+        else{
+            res.send('no tasks')
+        }
     })
 }

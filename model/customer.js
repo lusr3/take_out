@@ -1,4 +1,4 @@
-const { addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getHistory, confirm, comment, getVid, updataGrade, listVendors, detailVendor } = require('../controller/customer')
+const { addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getHistory, confirm, comment, updataGrade, listVendors, detailVendor, updateSales } = require('../controller/customer')
 const { currentTime } = require('../util/currentTime')
 const { detail } = require('../controller/user')
 
@@ -25,6 +25,10 @@ exports.list = function(req, res) {
     const promise = listVendors()
     // 每个商家信息为(vname, icon, grade, floor_price)
     promise.then((sqlData) => {
+<<<<<<< HEAD
+=======
+        // console.log(sqlData)
+>>>>>>> 512619a0ac79793c4ffe93df1b8b352d54b3f160
         if (sqlData.rowCount) {
             res.render('list_vendor', {
                 items: sqlData.rows
@@ -103,17 +107,17 @@ exports.commit = function(req, res) {
             return get_all_order(cid)
         }
         else{
-            console.log('price error')
+            res.send('price error')
         }
     })
     // 得到当前所有点的菜(ttemp 里面的内容)
     .then((sqlData) => {
         if (sqlData.rowCount) {
             orders = sqlData.rows
-            return addTask(cid, tol_price, currentTime())
+            return addTask(cid, tol_price, orders[0].vid, currentTime())
         }
         else{
-            console.log('orders error')
+            res.send('orders error')
         }
     })
     // 添加任务后得到 ttid
@@ -122,7 +126,7 @@ exports.commit = function(req, res) {
             return get_ttid(cid)
         }
         else{
-            console.log('ttid error')
+            res.send('ttid error')
         }
     })
     // 添加 ttid 到 orders
@@ -135,19 +139,27 @@ exports.commit = function(req, res) {
             return addHistory(orders)
         }
         else{
-            console.log('task error')
+            res.send('task error')
         }
     })
-    // 添加历史
+    // 增加历史后更新销量
+    .then((sqlData) => {
+        if (sqlData.rowCount) {
+            return updateSales(orders)
+        }
+        else{
+            res.send('history error')
+        }
+    })
+    // 更新销量后删除 ttemp 中的内容
     .then((sqlData) => {
         if (sqlData.rowCount) {
             return delete_order(cid)
         }
         else{
-            console.log('history error')
+            res.send('update sale error')
         }
     })
-    // 删除 ttemp 中的内容
     .then((sqlData) => {
         if (sqlData.rowCount) {
             res.send('succes commit')
@@ -164,7 +176,7 @@ exports.history = function(req, res) {
     const promise = getHistory(cid)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
-            // 返回task中订单信息 (ttid, cid, rid, tol_price, status, creattime, finishtime)
+            // 返回task中订单信息 (ttid, cid, rid, tol_price, status, creattime, finishtime, vid)
             // 按 status 从小到大排序, 再按发起时间排序
             res.send(sqlData.rows)
         }
@@ -182,23 +194,13 @@ exports.Pcomment = function(req, res) {
     const cid = req.session._id
     // const cid = '哈哈哈'
     const ttid = req.body.ttid
+    const vid = req.body.vid
     const cwords = req.body.cwords
     const cpicture = req.body.cpicture
     const grade = req.body.grade
-    let vid
-    const promise = getVid(ttid)
-    // 得到 vid 后新增评价
-    promise.then((sqlData) => {
-        if (sqlData.rowCount) {
-            vid = sqlData.rows[0].vid
-            return comment(cid, ttid, vid, cwords, cpicture, currentTime(), grade)
-        }
-        else{
-            res.send('get vid fail')
-        }
-    })
+    const promise = comment(cid, ttid, vid, cwords, cpicture, currentTime(), grade)
     // 新增评价后更新商家评分
-    .then((sqlData) => {
+    promise.then((sqlData) => {
         if (sqlData.rowCount) {
             return updataGrade(vid)
         }
