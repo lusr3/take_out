@@ -19,8 +19,8 @@
                     <h3><%= item.dname %></h3>
                     <p>价格：<%= item.price %></p>
                     <p>销量：<%= item.sale %></p>
-                    <p><a href="/customer/detail/add?dname=<%= item.dname %>" class="btn btn-primary" role="button">+</a>
-                        <a href="/customer/detail/delete?dname=<%= item.dname %>" class="btn btn-default" role="button">-</a>
+                    <p><a href="/customer/detail/add?dname=<%= item.dname %>&fprice=<%= fprice %>&vname=<%= vname %>" class="btn btn-primary" role="button" method="get">+</a>
+                        <a href="/customer/detail/delete?dname=<%= item.dname %>&fprice=<%= fprice %>&vname=<%= vname %>" class="btn btn-default" role="button" method="get">-</a>
                     </p>
                 </div>
             </div>
@@ -39,6 +39,7 @@
         </ul>
         <p><strong>总价：<%= tol_price %>元</strong></p>
         <p><strong>起送价：<%= fprice %>元</strong></p>
+        <a href="/customer/detail/commit" class="btn btn-primary" role="button" method="get">提交订单</a>
     </div>
 
 </body>

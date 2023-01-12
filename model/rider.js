@@ -46,6 +46,7 @@ exports.pending = function(req, res) {
     })
 }
 
+// TODO:
 exports.get = function(req, res) {
     const rid = req.session._id
     // const rid = 'lwyyds3'

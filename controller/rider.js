@@ -14,6 +14,7 @@ const listPending = () => {
     return execSql(sql)
 }
 
+// TODO: 未完成+已完成 getUnTask getTask
 const getTask = (rid, ttid) => {
     let sql = `update task set rid='${rid}', status='1' where ttid='${ttid}';`
     return execSql(sql)

@@ -1,4 +1,4 @@
-const { addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getHistory, confirm, comment, updataGrade, listVendors, detailVendor, updateSales, getDishs } = require('../controller/customer')
+const { addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getUnHistory, getHistory, confirm, comment, updataGrade, listVendors, detailVendor, updateSales, getDishs } = require('../controller/customer')
 const { currentTime } = require('../util/currentTime')
 const { detail } = require('../controller/user')
 
@@ -26,6 +26,7 @@ exports.list = function(req, res) {
     // 每个商家信息为(vname, icon, grade, floor_price)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
+            console.log(sqlData.rows)
             res.render('list_vendor', {
                 items: sqlData.rows
             })
@@ -35,6 +36,9 @@ exports.list = function(req, res) {
         }
     })
 }
+
+choose_items = []
+total_price = 0
 
 exports.detail = function(req, res) {
     const vname = req.query.vname
@@ -52,8 +56,8 @@ exports.detail = function(req, res) {
             res.render('list_vendor_dish', {
                 vname: vname,
                 dish_items: ret_data,
-                choose_items: [],
-                tol_price: 0,
+                choose_items: choose_items,
+                tol_price: total_price,
                 fprice: fprice
             })
         }
@@ -87,7 +91,9 @@ exports.add = function(req, res) {
     })
     .then((sqlData) => {
         if (sqlData.rowCount) {
-            res.send([sqlData.rows, tol_price])
+            choose_items = sqlData.rows
+            total_price = tol_price
+            res.redirect('/customer/detail?vname=' + req.query.vname + '&fprice=' + req.query.fprice)
         }
         else{
             res.send('error')
@@ -96,9 +102,8 @@ exports.add = function(req, res) {
 }
 
 exports.delete = function(req, res) {
-    const dname = req.body.dname
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const dname = req.query.dname
+    const cid = req.session._id
     const promise = deleteDish(cid, dname)
     let tol_price
     promise.then((sqlData) => {
@@ -124,13 +129,16 @@ exports.delete = function(req, res) {
         }
     })
     .then((sqlData) => {
-        res.send([sqlData.rows, tol_price])
+        choose_items = sqlData.rows
+        total_price = tol_price
+        console.log('choose_items:', choose_items)
+        console.log('total_price:', total_price)
+        res.redirect('/customer/detail?vname=' + req.query.vname + '&fprice=' + req.query.fprice)
     })
 }
 
 exports.commit = function(req, res) {
     const cid = req.session._id
-    // const cid = '哈哈哈'
     let tol_price
     let orders
     const promise = get_tol_price(cid)
@@ -188,6 +196,8 @@ exports.commit = function(req, res) {
     // 更新销量后删除 ttemp 中的内容
     .then((sqlData) => {
         if (sqlData.rowCount) {
+            choose_items = []
+            total_price = 0
             return delete_order(cid)
         }
         else{
@@ -196,7 +206,7 @@ exports.commit = function(req, res) {
     })
     .then((sqlData) => {
         if (sqlData.rowCount) {
-            res.send('succes commit')
+            res.send('<script>alert("下单成功"); window.location.href = "/user/login"; </script>');
         }
         else{
             res.send('delete error')
@@ -204,18 +214,45 @@ exports.commit = function(req, res) {
     })
 }
 
+// 只允许同时存在一个未完成的订单
+unfinished_task = []
+finished_task = []
+
+// TODO:
 exports.history = function(req, res) {
     const cid = req.session._id
-    // const cid = '哈哈哈'
-    const promise = getHistory(cid)
+    const promise = getUnHistory(cid)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
+            unfinished_task.push(sqlData.rows[0]['vname'])
+            unfinished_task.push(sqlData.rows[0]['createtime'])
+            unfinished_task.push(sqlData.rows[0]['ttid'])
+            for (var key in sqlData.rows) {
+                unfinished_task.push(sqlData.rows[key]['dname'])
+            }
             // 返回task中订单信息 (ttid, cid, rid, tol_price, status, creattime, finishtime, vid)
             // 按 status 从小到大排序, 再按发起时间排序
-            res.send(sqlData.rows)
+            // res.render('cus_history', {
+            //     unfinished_task: unfinished_task,
+            //     finished_task: finished_task
+            // })
+            // unfinished_task = []
+        }
+        return getHistory(cid)
+    })
+    .then((sqlData) => {
+        if (sqlData.rowCount || unfinished_task.length) {
+            console.log(sqlData.rows)
+            // TODO: 怎么样返回
+            res.render('cus_history', {
+                unfinished_task: unfinished_task,
+                finished_task: finished_task
+            })
+            unfinished_task = []
+            finished_task = []
         }
         else{
-            res.send('no history')
+            res.send('orders error')
         }
     })
 }
@@ -257,12 +294,12 @@ exports.Pcomment = function(req, res) {
 }
 
 exports.confirm = function(req, res) {
-    const ttid = req.body.ttid
+    const ttid = req.query.ttid
     const promise = confirm(ttid, currentTime())
     // 将订单状态修改为 2，添加完成时间
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
-            res.send('success confirm')
+            res.send('<script>alert("确认收货！"); window.location.href = "/user/login"; </script>');
         }
         else{
             res.send('confirm error')

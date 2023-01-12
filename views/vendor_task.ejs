@@ -9,12 +9,12 @@
 </head>
 <body>
     <div class="caption text-center">
-        <h3><strong>未完成的订单</strong></h3>
+        <h3><strong>未处理的订单</strong></h3>
     </div>
     <ul>
             <div class="thumbnail">
                 <div class="caption text-center">
-                    <h3>在商家 <%= unfinished_task[0] %> 消费的订单</h3>
+                    <h3>顾客 <%= unfinished_task[0] %> 创建的订单</h3>
                     <ul>
                         <% var idx = 0; %>
                         <% for(var i = 3; i < unfinished_task.length; i++){ %>
@@ -22,8 +22,8 @@
                             <p>菜品 <%= idx %>：<%= unfinished_task[i] %></p>
                         <% } %>
                     </ul>
-                    <p>订单创建时间：<%= unfinished_task[1] %></p>
-                    <p><a href="/customer/history/confirm?ttid=<%= unfinished_task[2] %>" class="btn btn-primary" role="button" method="get">确认完成</a>
+                    <p>下单时间：<%= unfinished_task[1] %></p>
+                    <!-- <p><a href="/customer/history/confirm?ttid=<%= unfinished_task[2] %>" class="btn btn-primary" role="button" method="get">确认完成</a> -->
                 </div>
             </div>
     </ul>
@@ -36,7 +36,7 @@
             <div class="thumbnail">
                 <div class="caption text-center">
                     <ul>
-                        <h3>在商家 <%= finished_task[0] %> 消费的订单</h3>
+                        <h3>客户 <%= finished_task[0] %> 创建的订单</h3>
                         <% var idx = 0; %>
                         <% for(var i = 3; i < finished_task.length; i++){ %>
                             <% idx = i - 2; %>

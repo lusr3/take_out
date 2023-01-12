@@ -69,8 +69,16 @@ const addHistory = (data) => {
     return execSql(sql)
 }
 
+// TODO: 未完成+已完成 getUnHistory getHistory
+const getUnHistory = (cid) => {
+    let sql = 'SELECT T.ttid, V.vname, D.dname, T.createtime FROM task T LEFT JOIN history H ON T.ttid=H.ttid LEFT JOIN dish D ON H.did=D.did LEFT JOIN vendor V ON H.vid=V.vid '
+    sql += `where T.cid='${cid}' and T.status<>2 order by createtime desc;`
+    return execSql(sql)
+}
+
 const getHistory = (cid) => {
-    let sql = `select * from task where cid='${cid}' order by status asc, createtime desc;`
+    let sql = 'SELECT V.vname, D.dname, T.createtime, T.finishtime FROM task T LEFT JOIN history H ON T.ttid=H.ttid LEFT JOIN dish D ON H.did=D.did LEFT JOIN vendor V ON H.vid=V.vid '
+    sql += `where T.cid='${cid}' and T.status=2 order by createtime desc;`
     return execSql(sql)
 }
 
@@ -109,7 +117,7 @@ const updateSales = (data) => {
 }
 
 const getDishs = (cid) => {
-    let sql = `select dname, price from dish where did in 
+    let sql = `select dname, price from dish where did in
     (select did from ttemp where cid='${cid}');`
     return execSql(sql)
 }
@@ -125,6 +133,7 @@ module.exports = {
     delete_order,
     get_ttid,
     addTask,
+    getUnHistory,
     getHistory,
     comment,
     getVid,

@@ -26,17 +26,25 @@ const insertDishPic = (name, filepath) => {
     return execSql(sql)
 }
 
-
-const getTask = (vid) => {
-    let sql = `select * from task where vid='${vid}' order by status asc, createtime desc;`
+// TODO: 未完成订单
+const getUnTask = (vid) => {
+    let sql = 'SELECT T.ttid, C.cname, D.dname, T.createtime FROM task T LEFT JOIN history H ON T.ttid=H.ttid LEFT JOIN dish D ON H.did=D.did LEFT JOIN vendor V ON H.vid=V.vid LEFT JOIN customer c ON T.cid=C.cid '
+    sql += `where T.cid='${vid}' and T.status<>2 order by createtime desc;`
     return execSql(sql)
 }
 
+// TODO: 已完成订单
+const getTask = (vid) => {
+    let sql = 'SELECT T.ttid, C.cname, D.dname, T.createtime FROM task T LEFT JOIN history H ON T.ttid=H.ttid LEFT JOIN dish D ON H.did=D.did LEFT JOIN vendor V ON H.vid=V.vid LEFT JOIN customer c ON T.cid=C.cid '
+    sql += `where T.cid='${vid}' and T.status=2 order by createtime desc;`
+    return execSql(sql)
+}
 
 module.exports = {
     list,
     addDish,
     deleteDish,
     insertDishPic,
+    getUnTask,
     getTask
 }
