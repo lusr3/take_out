@@ -27,6 +27,8 @@ router.get('/register', user.Gregister);
 router.post('/register', user.Pregister);
 router.get('/upload', user.Gupload);
 router.post('/upload', upload.single('file'), user.Pupload);
+router.get('/edit', user.Gedit);
+router.post('/edit', user.Pedit);
 
 // TODO: 修改信息应该也是在 user 里面
 

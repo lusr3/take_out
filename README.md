@@ -60,8 +60,3 @@ app.use(session({
     maxAge: 120 * 1000
   },
   store: sessionStore
-<<<<<<< HEAD
-}))
-=======
-}))
->>>>>>> 8544646 (add login)
