@@ -7,13 +7,13 @@ const { execSql } = require('../exec/execSql')
 const detail = (type, id) => {
     let sql = `select * from ${type} `
     if (type === 'customer') {
-        sql += `where cname='${id}';`
+        sql += `where cid='${id}';`
     }
     else if (type === 'vendor') {
-        sql += `where vname='${id}';`
+        sql += `where vid='${id}';`
     }
     else{
-        sql += `where rname='${id}';`
+        sql += `where rid='${id}';`
     }
     return execSql(sql)
 }
@@ -35,18 +35,18 @@ const register = (type, id, passwd, name, phone, address, fprice) => {
     return execSql(sql)
 }
 
-const edit = (type, id, passwd, name, phone, figure, address, fprice) => {
+const edit = (type, id, passwd, name, phone, address, fprice) => {
     let sql = `update ${type} set `
     if (type === 'customer') {
-        sql += `passwd='${passwd}', cname='${name}', phone='${phone}', icon=NULL, address='${address}' `
+        sql += `passwd='${passwd}', cname='${name}', phone='${phone}', address='${address}' `
         sql += `where cid='${id}';`
     }
     else if (type === 'vendor') {
-        sql += `passwd='${passwd}', vname='${name}', icon=NULL, floor_price='${fprice}' `
+        sql += `passwd='${passwd}', vname='${name}', floor_price='${fprice}' `
         sql += `where vid='${id}';`
     }
     else{
-        sql += `passwd='${passwd}', rname='${name}', phone='${phone}, icon=NULL' `
+        sql += `passwd='${passwd}', rname='${name}', phone='${phone}' `
         sql += `where rid='${id}';`
     }
     return execSql(sql)
@@ -66,19 +66,21 @@ const login = (type, id, passwd) => {
     return execSql(sql)
 }
 
-const findPic = (type, id) => {
-    let sql = `select icon from ${type} `
-    if (type === 'customer') {
-        sql += `where cid='${id}';`
-    }
-    else if (type === 'vendor') {
-        sql += `where vid='${id}';`
-    }
-    else{
-        sql += `where rid='${id}';`
-    }
-    return execSql(sql)
-}
+// const findPic_and_User = (type, id) => {
+//     // let sql = `select icon from ${type} `
+//     let sql = 'select icon, '
+//     if (type === 'customer') {
+//         sql += 'cname'
+//         sql += `where cid='${id}';`
+//     }
+//     else if (type === 'vendor') {
+//         sql += `where vid='${id}';`
+//     }
+//     else{
+//         sql += `where rid='${id}';`
+//     }
+//     return execSql(sql)
+// }
 
 const insertPic = (type, id, filepath) => {
     let sql = `update ${type} set `
@@ -99,6 +101,6 @@ module.exports = {
     edit,
     login,
     detail,
-    findPic,
+    // findPic,
     insertPic
 }

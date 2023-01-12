@@ -4,7 +4,6 @@ var user = require('../model/user');
 var multer = require('multer');
 
 const storage = multer.diskStorage({
-    // destination:'public/uploads/'+new Date().getFullYear() + (new Date().getMonth()+1) + new Date().getDate(),
     destination(req,res,cb){
       cb(null,'public/uploads/');
     },
@@ -12,7 +11,7 @@ const storage = multer.diskStorage({
       const filenameArr = file.originalname.split('.');
       cb(null,Date.now() + '.' + filenameArr[filenameArr.length-1]);
     }
-});
+  });
 const upload = multer({storage});
 
 

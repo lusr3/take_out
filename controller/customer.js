@@ -10,8 +10,8 @@ const list = () => {
 }
 
 
-const detail = (vname) => {
-    let sql = `select dname, dpicture, price, sale from dish 
+const detail_cus = (vname) => {
+    let sql = `select dname, dpicture, price, sale from dish
     where vid = (select vid from vendor where vname='${vname}' order by dname);`
     return execSql(sql)
 }
@@ -25,7 +25,7 @@ const add = (cid, dname) => {
 }
 
 const deleteDish = (cid, dname) => {
-    let sql = `delete from ttemp where did = 
+    let sql = `delete from ttemp where did =
     (select did from dish where dname='${dname}' and cid='${cid}')`
     return execSql(sql)
 }
@@ -36,7 +36,7 @@ const commit = () => {
 
 module.exports = {
     list,
-    detail,
+    detail_cus,
     add,
     deleteDish,
     commit
