@@ -51,8 +51,8 @@ exports.detail = function(req, res) {
 
 exports.add = function(req, res) {
     const dname = req.body.dname
-    const cid = req.session._id
-    // const cid = '哈哈哈'
+    // const cid = req.session._id
+    const cid = '哈哈哈'
     const promise = addDish(cid, dname)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -67,8 +67,8 @@ exports.add = function(req, res) {
 
 exports.delete = function(req, res) {
     const dname = req.body.dname
-    const cid = req.session._id
-    // const cid = '哈哈哈'
+    // const cid = req.session._id
+    const cid = '哈哈哈'
     const promise = deleteDish(cid, dname)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -81,8 +81,8 @@ exports.delete = function(req, res) {
 }
 
 exports.commit = function(req, res) {
-    const cid = req.session._id
-    // const cid = '哈哈哈'
+    // const cid = req.session._id
+    const cid = '哈哈哈'
     let tol_price
     let orders
     const promise = get_tol_price(cid)
@@ -149,8 +149,8 @@ exports.commit = function(req, res) {
 }
 
 exports.history = function(req, res) {
-    const cid = req.session._id
-    // const cid = '哈哈哈'
+    // const cid = req.session._id
+    const cid = '哈哈哈'
     const promise = getHistory(cid)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -169,8 +169,8 @@ exports.Gcomment = function(req, res) {
 }
 
 exports.Pcomment = function(req, res) {
-    const cid = req.session._id
-    // const cid = '哈哈哈'
+    // const cid = req.session._id
+    const cid = '哈哈哈'
     const ttid = req.body.ttid
     const cwords = req.body.cwords
     const cpicture = req.body.cpicture

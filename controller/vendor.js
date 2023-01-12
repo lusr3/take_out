@@ -9,10 +9,9 @@ const list = (vid) => {
     return execSql(sql)
 }
 
-const add = (dname, dpicture, price, sale, vid) => {
+const addDish = (dname, dpicture, price, vid) => {
     let sql = `insert into dish(dname, price, sale, vid, dpicture)
-     values('${dname}', '${price}', '${sale}', '${vid}', '${dpicture}');`
-    //  console.log(sql)
+     values('${dname}', '${price}', '0', '${vid}', '${dpicture}');`
     return execSql(sql)
 }
 
@@ -21,14 +20,14 @@ const deleteDish = (dname) => {
     return execSql(sql)
 }
 
-const task = () => {
-
+const task = (vid) => {
+    
 }
 
 
 module.exports = {
     list,
-    add,
+    addDish,
     deleteDish,
     task
 }

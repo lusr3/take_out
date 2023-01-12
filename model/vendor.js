@@ -1,4 +1,4 @@
-const {list, add, deleteDish, task} = require('../controller/vendor')
+const {list, addDish, deleteDish, task} = require('../controller/vendor')
 
 const { detail } = require('../controller/user')
 
@@ -22,12 +22,12 @@ exports.index = function (req, res) {
 };
 
 exports.list = function(req, res) {
-    // const vid = req.session.uid
-    const vid = 'test1'
+    // const vid = req.session._id
+    const vid = 'lwyyds'
     const promise = list(vid)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
-            // 返回数据是列表 (dname, dpicture, price, sale)
+            // 返回菜品信息 (dname, dpicture, price, sale)
             res.send(sqlData.rows)
         }
         else{
@@ -42,12 +42,11 @@ exports.Gadd = function(req, res) {
 
 exports.Padd = function(req, res) {
     // const vid = req.session.uid
-    const vid = 'test'
+    const vid = 'lwyyds'
     const dname = req.body.dname
     const dpicture = req.body.dpicture
     const price = req.body.price
-    const sale = req.body.sale
-    const promise = add(dname, dpicture, price, sale, vid)
+    const promise = add(dname, dpicture, price, vid)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
             res.send('<script>alert("添加成功"); window.location.href = "/vendor/list"; </script>')
@@ -62,7 +61,6 @@ exports.delete = function(req, res) {
     const dname = req.body.dname
     const promise = deleteDish(dname)
     promise.then((sqlData) => {
-        // console.log(sqlData)
         // 删除成功刷新列表
         if (sqlData.rowCount) {
             res.send('window.location.href = "/vendor/list"; </script>')
@@ -71,4 +69,8 @@ exports.delete = function(req, res) {
             res.send('error')
         }
     })
+}
+
+exports.task = function(req, res) {
+    
 }

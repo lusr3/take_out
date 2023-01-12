@@ -8,5 +8,6 @@ router.get('/list', ven.list);
 router.get('/add', ven.Gadd);
 router.post('/add', ven.Padd);
 router.post('/delete', ven.delete);
+router.get('/task', ven.task)
 
 module.exports = router;
