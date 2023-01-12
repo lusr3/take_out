@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>评价页面</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+<div class="container">
+    <div id="loginModal" class="modal show">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="text-center text-primary">请您评价此次订单</h1>
+                </div>
+                <div class="modal-body clearfix">
+                    <form action="/customer/history/comment?ttid=<%= ttid %>&vid=<%= vid %>" class="form col-md-12 center-block" method="post">
+                        <div class="form-group">
+                            <input type="textaera" name="cwords" class="form-control input-lg" rows="3" placeholder="您的评论">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" name="grade" class="form-control input-lg" placeholder="您的评分(0-5)">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">发布评价</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/javascripts/jquery.min.js"></script>
+<script src="/javascripts/jquery.cookie.js"></script>
+<script src="/javascripts/bootstrap.min.js"></script>
+<script src="/javascripts/common.js"></script>
+</html>

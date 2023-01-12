@@ -74,9 +74,9 @@ const getHistory = (cid) => {
     return execSql(sql)
 }
 
-const comment = (cid, ttid, vid, cwords, cpicture, commenttime, grade) => {
-    let sql = `insert into comments(cid, ttid, vid, cwords, cpicture, commenttime, grade)
-    values('${cid}', '${ttid}', '${vid}', '${cwords}', '${cpicture}','${commenttime}', '${grade}');`
+const comment = (cid, ttid, vid, cwords, commenttime, grade) => {
+    let sql = `insert into comments(cid, ttid, vid, cwords, commenttime, grade)
+    values('${cid}', '${ttid}', '${vid}', '${cwords}', '${commenttime}', '${grade}');`
     return execSql(sql)
 }
 
