@@ -18,10 +18,15 @@
                 <li><a href="/customer/history">订单信息</a></li>
             </ul>
             <div class="pull-right">
-                <p class="navbar-text"><a href="/user/edit">[更改个人信息]</a><a href="/user/logout">[注销]</a></p>
+                <p class="navbar-text"><%=locals.username%> <a href="/user/edit">[更改个人信息]</a><a href="/user/logout">[注销]</a></p>
             </div>
         </div>
     </div>
 </nav>
-<img src="/<%= filename %>"+  alt="头像" width="200" height="200">
-<p class="navbar-text"><a href="/user/upload">[点击上传图像]</a></p>
+<div class="row">
+    <div class="col-xs-6 col-md-3">
+      <a href="/user/upload" >
+        <img src="/<%= filename %>"+  alt="头像" width="150" height="150" class="img-circle">
+      </a>
+    </div>
+</div>

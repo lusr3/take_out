@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的菜品</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+    <div style="position: fixed;bottom:280px;left:80px;">
+        <h1 style="writing-mode:vertical-lr">菜品一览表</h1>
+    </div>
+    <ul>
+        <div class="container">
+            <% items.forEach(function(item){%>
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <a href="/vendor/upload?dishname=<%= item.dname %>">
+                    <img src="http://localhost:3000/<%= item.dpicture %>" alt="..." width="200" height="200">
+                    </a>
+                    <div class="caption text-center">
+                        <h3><%= item.dname %></h3>
+                        <p>价格：<%= item.price %></p>
+                        <p>销量：<%= item.sale %></p>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </ul>
+    <div style="position: fixed;bottom:400px;right:80px;">
+        <div class="row">
+            <div class="col-xs-6 col-md-3">
+              <a href="/vendor/add" >
+                <img src="http://localhost:3000/uploads/add.jpg" alt="..." width="60" height="68" class="img-circle">
+              </a>
+            </div>
+        </div>
+    </div>
+    <div style="position: fixed;bottom:250px;right:80px;">
+        <div class="row">
+            <div class="col-xs-6 col-md-3">
+              <a href="/vendor/delete" >
+                <img src="http://localhost:3000/uploads/minus.jpg" alt="..." width="60" height="70" class="img-circle">
+              </a>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/javascripts/jquery.min.js"></script>
+<script src="/javascripts/jquery.cookie.js"></script>
+<script src="/javascripts/bootstrap.min.js"></script>
+<script src="/javascripts/common.js"></script>
+</html>

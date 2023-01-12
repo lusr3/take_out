@@ -9,15 +9,20 @@ const list = (vid) => {
     return execSql(sql)
 }
 
-const add = (dname, dpicture, price, sale, vid) => {
-    let sql = `insert into dish(dname, price, sale, vid, dpicture)
-     values('${dname}', '${price}', '${sale}', '${vid}', '${dpicture}');`
-    //  console.log(sql)
+const add = (dname, price, vid) => {
+    let sql = `insert into dish(dname, price, sale, vid)
+     values('${dname}', '${price}', 0, '${vid}');`
     return execSql(sql)
 }
 
 const deleteDish = (dname) => {
     let sql = `delete from dish where dname='${dname}';`
+    return execSql(sql)
+}
+
+const insertDishPic = (name, filepath) => {
+    let sql = `update dish set dpicture = '${filepath}' where dname = '${name}';`
+
     return execSql(sql)
 }
 
@@ -30,5 +35,6 @@ module.exports = {
     list,
     add,
     deleteDish,
-    task
+    task,
+    insertDishPic
 }

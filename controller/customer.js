@@ -12,7 +12,7 @@ const listVendors = () => {
 
 const detailVendor = (vname) => {
     let sql = `select dname, dpicture, price, sale from dish
-    where vid = (select vid from vendor where vname='${vname}' order by dname);`
+    where vid = (select vid from vendor where vname='${vname}') order by dname;`
     return execSql(sql)
 }
 

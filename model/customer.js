@@ -25,7 +25,6 @@ exports.list = function(req, res) {
     const promise = listVendors()
     // 每个商家信息为(vname, icon, grade, floor_price)
     promise.then((sqlData) => {
-        console.log(sqlData)
         if (sqlData.rowCount) {
             res.render('list_vendor', {
                 items: sqlData.rows
@@ -43,7 +42,16 @@ exports.detail = function(req, res) {
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
             // 返回该商家的菜品信息 (dname, dpicture, price, sale)
-            res.send(sqlData.rows)
+            ret_data = sqlData.rows
+            for (let i = 0; i < ret_data.length; i++) {
+                if (ret_data[i].dpicture === null) {
+                    ret_data[i].dpicture = 'uploads/default_dish.jpg'
+                }
+            }
+            res.render('list_vendor_dish', {
+                vname: vname,
+                items: ret_data
+            })
         }
         else{
             res.send('no dishs')

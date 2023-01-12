@@ -1,4 +1,4 @@
-const {list, add, deleteDish, task} = require('../controller/vendor')
+const {list, add, deleteDish, task, insertDishPic} = require('../controller/vendor')
 
 const { detail } = require('../controller/user')
 
@@ -27,7 +27,15 @@ exports.list = function(req, res) {
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
             // 返回数据是列表 (dname, dpicture, price, sale)
-            res.send(sqlData.rows)
+            ret_data = sqlData.rows
+            for (let i = 0; i < ret_data.length; i++) {
+                if (ret_data[i].dpicture === null) {
+                    ret_data[i].dpicture = 'uploads/default_dish.jpg'
+                }
+            }
+            res.render('ven_list_dish', {
+                items: ret_data
+            })
         }
         else{
             res.send('no dishs now')
@@ -36,17 +44,14 @@ exports.list = function(req, res) {
 }
 
 exports.Gadd = function(req, res) {
-    res.send('展示添加表单')
+    res.render('add_dish')
 }
 
 exports.Padd = function(req, res) {
-    // const vid = req.session.uid
-    const vid = 'test'
+    const _id = req.session._id
     const dname = req.body.dname
-    const dpicture = req.body.dpicture
     const price = req.body.price
-    const sale = req.body.sale
-    const promise = add(dname, dpicture, price, sale, vid)
+    const promise = add(dname, price, _id)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
             res.send('<script>alert("添加成功"); window.location.href = "/vendor/list"; </script>')
@@ -57,17 +62,35 @@ exports.Padd = function(req, res) {
     })
 }
 
-exports.delete = function(req, res) {
+exports.Gdelete = function(req, res) {
+    res.render('del_dish')
+}
+
+exports.Pdelete = function(req, res) {
     const dname = req.body.dname
     const promise = deleteDish(dname)
     promise.then((sqlData) => {
-        // console.log(sqlData)
         // 删除成功刷新列表
         if (sqlData.rowCount) {
-            res.send('window.location.href = "/vendor/list"; </script>')
+            res.send('<script>alert("删除成功"); window.location.href = "/vendor/list"; </script>')
         }
         else{
             res.send('error')
         }
+    })
+}
+
+exports.Gupload = function (req, res) {
+    res.render('upload_dish', {
+        dishname: req.query.dishname
+    })
+}
+
+exports.Pupload = function(req, res, next){
+    const dishname = req.query.dishname
+    const filepath = 'uploads/' + req.file.filename
+    const promise = insertDishPic(dishname, filepath)
+    promise.then((sqlData) => {
+        res.redirect('/vendor/list')
     })
 }
