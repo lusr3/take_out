@@ -34,12 +34,13 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function (req, res, next) {
-    console.log(req.url)
     if (req.url != '/user/login' && req.url != '/user/register?' && req.url != '/user/register' && req.session.username === undefined) {
         res.redirect('/user/login');
         return;
     }
     res.locals.username = req.session.username;
+    res.locals.type = req.session.type;
+    res.locals._id = req.session._id;
     next();
 });
 
