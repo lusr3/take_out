@@ -33,15 +33,15 @@ app.use(session({
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use(function (req, res, next) {
-//     console.log(req.url)
-//     if (req.url != '/user/login' && req.url != '/user/register?' && req.url != '/user/register' && req.session.username === undefined) {
-//         res.redirect('/user/login');
-//         return;
-//     }
-//     res.locals.username = req.session.username;
-//     next();
-// });
+app.use(function (req, res, next) {
+    console.log(req.url)
+    if (req.url != '/user/login' && req.url != '/user/register?' && req.url != '/user/register' && req.session.username === undefined) {
+        res.redirect('/user/login');
+        return;
+    }
+    res.locals.username = req.session.username;
+    next();
+});
 
 // 主要路由
 app.use('/user', userRouter);

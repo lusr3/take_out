@@ -9,7 +9,6 @@ const listVendors = () => {
     return execSql(sql)
 }
 
-
 const detailVendor = (vname) => {
     let sql = `select dname, dpicture, price, sale from dish
     where vid = (select vid from vendor where vname='${vname}' order by dname);`
@@ -97,6 +96,18 @@ const updataGrade = (vid) => {
     return execSql(sql)
 }
 
+const updateSales = (data) => {
+    let sql = `update dish set sale=sale+1 where did in (`
+    for (var key in data) {
+        if (key != 0) {
+            sql += `, `
+        }
+        sql += `'${data[key].did}'`
+    }
+    sql += `);`
+    return execSql(sql)
+}
+
 module.exports = {
     listVendors,
     detailVendor,
@@ -112,5 +123,6 @@ module.exports = {
     comment,
     getVid,
     confirm,
-    updataGrade
+    updataGrade,
+    updateSales
 }

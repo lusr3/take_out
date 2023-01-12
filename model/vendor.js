@@ -22,8 +22,8 @@ exports.index = function (req, res) {
 };
 
 exports.list = function(req, res) {
-    // const vid = req.session._id
-    const vid = 'lwyyds'
+    const vid = req.session._id
+    // const vid = 'lwyyds'
     const promise = list(vid)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -41,8 +41,8 @@ exports.Gadd = function(req, res) {
 }
 
 exports.Padd = function(req, res) {
-    // const vid = req.session.uid
-    const vid = 'lwyyds'
+    const vid = req.session._id
+    // const vid = 'lwyyds'
     const dname = req.body.dname
     const dpicture = req.body.dpicture
     const price = req.body.price
@@ -52,7 +52,7 @@ exports.Padd = function(req, res) {
             res.send('<script>alert("添加成功"); window.location.href = "/vendor/list"; </script>')
         }
         else{
-            res.send('<script>alert("您提供的信息不完整"); window.location.href = "/vendor/add"; </script>')
+            res.send('error')
         }
     })
 }
@@ -72,8 +72,8 @@ exports.delete = function(req, res) {
 }
 
 exports.task = function(req, res) {
-    // const vid = req.session._id
-    const vid = 'lwyyds'
+    const vid = req.session._id
+    // const vid = 'lwyyds'
     const promise = getTask(vid)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {

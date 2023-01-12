@@ -21,8 +21,8 @@ exports.index = function (req, res) {
 };
 
 exports.finished = function(req, res) {
-    // const rid = req.session._id
-    const rid = 'lwyyds3'
+    const rid = req.session._id
+    // const rid = 'lwyyds3'
     const promise = listFinshed(rid)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -47,8 +47,8 @@ exports.pending = function(req, res) {
 }
 
 exports.get = function(req, res) {
-    // const rid = req.session._id
-    const rid = 'lwyyds3'
+    const rid = req.session._id
+    // const rid = 'lwyyds3'
     const ttid = req.body.ttid
     const promise = getTask(rid, ttid)
     promise.then((sqlData) => {

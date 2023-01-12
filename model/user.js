@@ -49,15 +49,12 @@ exports.Plogin = function (req, res) {
     const type = req.body.type
     const id = req.body.id
     const passwd = md5(req.body.passwd)
+    if(type === '请选择您的身份') {
+        res.send('<script>alert("请选择您的身份"); window.location.href = "/user/login"; </script>')
+    }
     const promise = login(type, id, passwd)
     promise.then((sqlData) => {
         if (sqlData.rowCount > 0) {
-            // res.json(
-            //     new SuccessModel({
-            //         tip: '登录成功',
-            //         updateTime: currentTime()
-            //     }, '用户登录')
-            // )
             req.session.type = type
             if (type === 'customer') {
                 req.session.username = sqlData.rows[0].cname

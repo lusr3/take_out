@@ -1,4 +1,4 @@
-const { addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getHistory, confirm, comment, updataGrade, listVendors, detailVendor } = require('../controller/customer')
+const { addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getHistory, confirm, comment, updataGrade, listVendors, detailVendor, updateSales } = require('../controller/customer')
 const { currentTime } = require('../util/currentTime')
 const { detail } = require('../controller/user')
 
@@ -25,7 +25,7 @@ exports.list = function(req, res) {
     const promise = listVendors()
     // 每个商家信息为(vname, icon, grade, floor_price)
     promise.then((sqlData) => {
-        console.log(sqlData)
+        // console.log(sqlData)
         if (sqlData.rowCount) {
             res.render('list_vendor', {
                 items: sqlData.rows
@@ -53,8 +53,8 @@ exports.detail = function(req, res) {
 
 exports.add = function(req, res) {
     const dname = req.body.dname
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const cid = req.session._id
+    // const cid = '哈哈哈'
     const promise = addDish(cid, dname)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -69,8 +69,8 @@ exports.add = function(req, res) {
 
 exports.delete = function(req, res) {
     const dname = req.body.dname
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const cid = req.session._id
+    // const cid = '哈哈哈'
     const promise = deleteDish(cid, dname)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -83,8 +83,8 @@ exports.delete = function(req, res) {
 }
 
 exports.commit = function(req, res) {
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const cid = req.session._id
+    // const cid = '哈哈哈'
     let tol_price
     let orders
     const promise = get_tol_price(cid)
@@ -130,16 +130,24 @@ exports.commit = function(req, res) {
             res.send('task error')
         }
     })
-    // 添加历史
+    // 增加历史后更新销量
     .then((sqlData) => {
         if (sqlData.rowCount) {
-            return delete_order(cid)
+            return updateSales(orders)
         }
         else{
             res.send('history error')
         }
     })
-    // 删除 ttemp 中的内容
+    // 更新销量后删除 ttemp 中的内容
+    .then((sqlData) => {
+        if (sqlData.rowCount) {
+            return delete_order(cid)
+        }
+        else{
+            res.send('update sale error')
+        }
+    })
     .then((sqlData) => {
         if (sqlData.rowCount) {
             res.send('succes commit')
@@ -151,8 +159,8 @@ exports.commit = function(req, res) {
 }
 
 exports.history = function(req, res) {
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const cid = req.session._id
+    // const cid = '哈哈哈'
     const promise = getHistory(cid)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
@@ -171,8 +179,8 @@ exports.Gcomment = function(req, res) {
 }
 
 exports.Pcomment = function(req, res) {
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const cid = req.session._id
+    // const cid = '哈哈哈'
     const ttid = req.body.ttid
     const vid = req.body.vid
     const cwords = req.body.cwords
