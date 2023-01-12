@@ -5,7 +5,7 @@
 const { execSql } = require('../exec/execSql')
 
 const list = () => {
-    let sql = `select vname, vpicture, grade, floor_price from vendor order by grade desc, floor_price asc;`
+    let sql = `select vname, icon, grade, floor_price from vendor order by grade desc, floor_price asc;`
     return execSql(sql)
 }
 

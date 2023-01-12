@@ -25,8 +25,11 @@ exports.list = function(req, res) {
     const promise = list()
     // rows 数组包含(vname, vpicture, grade, floor_price)信息
     promise.then((sqlData) => {
+        console.log(sqlData)
         if (sqlData.rowCount) {
-            res.send(sqlData.rows)
+            res.render('list_vendor', {
+                items: sqlData.rows
+            })
         }
         else{
             res.send('no vendors')
@@ -36,7 +39,7 @@ exports.list = function(req, res) {
 
 exports.detail = function(req, res) {
     const vname = req.query.vname
-    const promise = detail(vname)
+    const promise = detail_cus(vname)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
             // 返回数据列表 (dname, dpicture, price, sale)

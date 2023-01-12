@@ -22,9 +22,8 @@ exports.index = function (req, res) {
 };
 
 exports.list = function(req, res) {
-    // const vid = req.session.uid
-    const vid = 'test1'
-    const promise = list(vid)
+    const _id = req.session._id
+    const promise = list(_id)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
             // 返回数据是列表 (dname, dpicture, price, sale)
