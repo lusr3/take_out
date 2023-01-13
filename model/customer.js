@@ -69,7 +69,8 @@ exports.detail = function(req, res) {
 
 exports.add = function(req, res) {
     const dname = req.query.dname
-    const cid = req.session._id
+    // const cid = req.session._id
+    const cid = '哈哈哈'
     const promise = addDish(cid, dname)
     let tol_price
     promise.then((sqlData) => {
@@ -93,7 +94,8 @@ exports.add = function(req, res) {
         if (sqlData.rowCount) {
             choose_items = sqlData.rows
             total_price = tol_price
-            res.redirect('/customer/detail?vname=' + req.query.vname + '&fprice=' + req.query.fprice)
+            // res.redirect('/customer/detail?vname=' + req.query.vname + '&fprice=' + req.query.fprice)
+            res.send('success')
         }
         else{
             res.send('error')
@@ -103,7 +105,8 @@ exports.add = function(req, res) {
 
 exports.delete = function(req, res) {
     const dname = req.query.dname
-    const cid = req.session._id
+    // const cid = req.session._id
+    const cid = '哈哈哈'
     const promise = deleteDish(cid, dname)
     let tol_price
     promise.then((sqlData) => {
@@ -129,18 +132,21 @@ exports.delete = function(req, res) {
         }
     })
     .then((sqlData) => {
-        choose_items = sqlData.rows
-        total_price = tol_price
-        console.log('choose_items:', choose_items)
-        console.log('total_price:', total_price)
-        res.redirect('/customer/detail?vname=' + req.query.vname + '&fprice=' + req.query.fprice)
+        // choose_items = sqlData.rows
+        // total_price = tol_price
+        // console.log('choose_items:', choose_items)
+        // console.log('total_price:', total_price)
+        // res.redirect('/customer/detail?vname=' + req.query.vname + '&fprice=' + req.query.fprice)
+        res.send('success')
     })
 }
 
 exports.commit = function(req, res) {
-    const cid = req.session._id
+    // const cid = req.session._id
+    const cid = '哈哈哈'
     let tol_price
     let orders
+    let time
     const promise = get_tol_price(cid)
     // 得到总价格
     promise.then((sqlData) => {
@@ -156,7 +162,8 @@ exports.commit = function(req, res) {
     .then((sqlData) => {
         if (sqlData.rowCount) {
             orders = sqlData.rows
-            return addTask(cid, tol_price, orders[0].vid, currentTime())
+            time = currentTime()
+            return addTask(cid, tol_price, orders[0].vid, time)
         }
         else{
             res.send('orders error')
@@ -165,7 +172,7 @@ exports.commit = function(req, res) {
     // 添加任务后得到 ttid
     .then((sqlData) => {
         if (sqlData.rowCount) {
-            return get_ttid(cid)
+            return get_ttid(cid, time)
         }
         else{
             res.send('ttid error')
@@ -214,45 +221,78 @@ exports.commit = function(req, res) {
     })
 }
 
-// 只允许同时存在一个未完成的订单
-unfinished_task = []
-finished_task = []
-
-// TODO:
 exports.history = function(req, res) {
     const cid = req.session._id
     const promise = getUnHistory(cid)
+    unfinished_tasks = []
+    finished_tasks = []
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
-            unfinished_task.push(sqlData.rows[0]['vname'])
-            unfinished_task.push(sqlData.rows[0]['createtime'])
-            unfinished_task.push(sqlData.rows[0]['ttid'])
+            let ttid = -1
+            let vname
+            let createtime
+            let tasks = []
+            let dishs = []
             for (var key in sqlData.rows) {
-                unfinished_task.push(sqlData.rows[key]['dname'])
+                if (ttid != sqlData.rows[key]['ttid']) {
+                    if (ttid != -1) {
+                        tasks.push(vname)
+                        tasks.push(createtime)
+                        tasks.push(ttid)
+                        unfinished_tasks.push(tasks.concat(dishs))
+                    }
+                    ttid = sqlData.rows[key]['ttid']
+                    vname = sqlData.rows[key]['vname']
+                    createtime = sqlData.rows[key]['createtime']
+                    tasks = []
+                    dishs = []
+                }
+                dishs.push(sqlData.rows[key]['dname'])
             }
-            // 返回task中订单信息 (ttid, cid, rid, tol_price, status, creattime, finishtime, vid)
-            // 按 status 从小到大排序, 再按发起时间排序
+            tasks.push(vname)
+            tasks.push(createtime)
+            tasks.push(ttid)
+            unfinished_tasks.push(tasks.concat(dishs))
             // res.render('cus_history', {
             //     unfinished_task: unfinished_task,
             //     finished_task: finished_task
             // })
-            // unfinished_task = []
         }
         return getHistory(cid)
     })
     .then((sqlData) => {
         if (sqlData.rowCount || unfinished_task.length) {
-            console.log(sqlData.rows)
+            let ttid = -1
+            let vname
+            let createtime
+            let tasks = []
+            let dishs = []
+            for (var key in sqlData.rows) {
+                if (ttid != sqlData.rows[key]['ttid']) {
+                    if (ttid != -1) {
+                        tasks.push(vname)
+                        tasks.push(createtime)
+                        tasks.push(ttid)
+                        finished_tasks.push(tasks.concat(dishs))
+                    }
+                    ttid = sqlData.rows[key]['ttid']
+                    vname = sqlData.rows[key]['vname']
+                    createtime = sqlData.rows[key]['createtime']
+                    tasks = []
+                    dishs = []
+                }
+                dishs.push(sqlData.rows[key]['dname'])
+            }
+            tasks.push(vname)
+            tasks.push(createtime)
+            tasks.push(ttid)
+            finished_tasks.push(tasks.concat(dishs))
             // TODO: 怎么样返回
-            res.render('cus_history', {
-                unfinished_task: unfinished_task,
-                finished_task: finished_task
-            })
-            unfinished_task = []
-            finished_task = []
-        }
-        else{
-            res.send('orders error')
+            // res.render('cus_history', {
+            //     unfinished_task: unfinished_task,
+            //     finished_task: finished_task
+            // })
+            res.send([unfinished_tasks, finished_tasks])
         }
     })
 }

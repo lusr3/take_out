@@ -1,5 +1,5 @@
 const { detail } = require('../controller/user')
-const { listFinshed, getTask, listPending, } = require('../controller/rider')
+const { getUnTask, getFiTask, getTask } = require('../controller/rider')
 
 exports.index = function (req, res) {
     const type = req.session.type
@@ -20,36 +20,95 @@ exports.index = function (req, res) {
     })
 };
 
-exports.finished = function(req, res) {
+exports.task = function(req, res) {
     const rid = req.session._id
-    // const rid = 'lwyyds3'
-    const promise = listFinshed(rid)
+    const promise = getUnTask(rid)
+    unfinished_tasks = []
+    finished_tasks = []
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
-            res.send(sqlData.rows)
+            let ttid = -1
+            let cname
+            let createtime
+            let address
+            let tasks = []
+            let dishs = []
+            for (var key in sqlData.rows) {
+                if (ttid != sqlData.rows[key]['ttid']) {
+                    if (ttid != -1) {
+                        tasks.push(cname)
+                        tasks.push(createtime)
+                        tasks.push(ttid)
+                        tasks.push(address)
+                        unfinished_tasks.push(tasks.concat(dishs))
+                    }
+                    ttid = sqlData.rows[key]['ttid']
+                    cname = sqlData.rows[key]['cname']
+                    createtime = sqlData.rows[key]['createtime']
+                    address = sqlData.rows[key]['address']
+                    tasks = []
+                    dishs = []
+                }
+                dishs.push(sqlData.rows[key]['dname'])
+            }
+            tasks.push(cname)
+            tasks.push(createtime)
+            tasks.push(ttid)
+            tasks.push(address)
+            unfinished_tasks.push(tasks.concat(dishs))
+            // res.render('cus_history', {
+            //     unfinished_task: unfinished_task,
+            //     finished_task: finished_task
+            // })
+        }
+        return getFiTask(rid)
+    })
+    .then((sqlData) => {
+        if (sqlData.rowCount) {
+            let ttid = -1
+            let cname
+            let createtime
+            let address
+            let tasks = []
+            let dishs = []
+            for (var key in sqlData.rows) {
+                if (ttid != sqlData.rows[key]['ttid']) {
+                    if (ttid != -1) {
+                        tasks.push(cname)
+                        tasks.push(createtime)
+                        tasks.push(ttid)
+                        tasks.push(address)
+                        finished_tasks.push(tasks.concat(dishs))
+                    }
+                    ttid = sqlData.rows[key]['ttid']
+                    cname = sqlData.rows[key]['cname']
+                    createtime = sqlData.rows[key]['createtime']
+                    address = sqlData.rows[key]['address']
+                    tasks = []
+                    dishs = []
+                }
+                dishs.push(sqlData.rows[key]['dname'])
+            }
+            tasks.push(cname)
+            tasks.push(createtime)
+            tasks.push(ttid)
+            tasks.push(address)
+            finished_tasks.push(tasks.concat(dishs))
+            // res.render('cus_history', {
+            //     unfinished_task: unfinished_task,
+            //     finished_task: finished_task
+            // })
         }
         else{
-            res.send('no finished task')
+            // res.send('no finished task')
         }
+        res.send([unfinished_tasks, finished_tasks])
     })
 }
 
-exports.pending = function(req, res) {
-    const promise = listPending()
-    promise.then((sqlData) => {
-        if (sqlData.rowCount) {
-            res.send(sqlData.rows)
-        }
-        else{
-            res.send('no pending task')
-        }
-    })
-}
-
-// TODO:
 exports.get = function(req, res) {
-    const rid = req.session._id
-    // const rid = 'lwyyds3'
+    // const rid = req.session._id
+    const rid = 'lwyyds3'
     const ttid = req.body.ttid
     const promise = getTask(rid, ttid)
     promise.then((sqlData) => {

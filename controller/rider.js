@@ -4,24 +4,25 @@
 
 const { execSql } = require('../exec/execSql')
 
-const listFinshed = (rid) => {
-    let sql = `select * from task where rid='${rid}' and status='2' order by createtime desc;`
+const getUnTask = (rid) => {
+    let sql = 'select cname, createtime, ttid, address, dname from task T natural join history H natural join dish D natural join customer C '
+    sql += `where T.status<>2 order by createtime desc;`
     return execSql(sql)
 }
 
-const listPending = () => {
-    let sql = `select * from task where status='0' order by createtime asc;`
+const getFiTask = (rid) => {
+    let sql = 'select cname, createtime, ttid, address, dname from task T natural join history H natural join dish D natural join customer C '
+    sql += `where T.rid='${rid}' and T.status=2 order by createtime desc;`
     return execSql(sql)
 }
 
-// TODO: 未完成+已完成 getUnTask getTask
 const getTask = (rid, ttid) => {
     let sql = `update task set rid='${rid}', status='1' where ttid='${ttid}';`
     return execSql(sql)
 }
 
 module.exports = {
-    listFinshed,
-    listPending,
+    getUnTask,
+    getFiTask,
     getTask
 }

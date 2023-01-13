@@ -1,7 +1,7 @@
 const {list, addDish, deleteDish, getUnTask, getTask, insertDishPic} = require('../controller/vendor')
 
 const { detail } = require('../controller/user');
-const { finished } = require('./rider');
+const { finished, task } = require('./rider');
 
 exports.index = function (req, res) {
     const type = req.session.type
@@ -97,41 +97,89 @@ exports.Pupload = function(req, res, next){
     })
 }
 
-unfinished_task = []
-finished_task = []
 
-// TODO:
 exports.task = function(req, res) {
     const vid = req.session._id
     const promise = getUnTask(vid)
+    unfinished_tasks = []
+    finished_tasks = []
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
-            unfinished_task.push(sqlData.rows[0]['cname'])
-            unfinished_task.push(sqlData.rows[0]['createtime'])
-            unfinished_task.push(sqlData.rows[0]['ttid'])
+            let ttid = -1
+            let cname
+            let createtime
+            let address
+            let tasks = []
+            let dishs = []
             for (var key in sqlData.rows) {
-                unfinished_task.push(sqlData.rows[key]['dname'])
+                if (ttid != sqlData.rows[key]['ttid']) {
+                    if (ttid != -1) {
+                        tasks.push(cname)
+                        tasks.push(createtime)
+                        tasks.push(ttid)
+                        tasks.push(address)
+                        unfinished_tasks.push(tasks.concat(dishs))
+                    }
+                    ttid = sqlData.rows[key]['ttid']
+                    cname = sqlData.rows[key]['cname']
+                    createtime = sqlData.rows[key]['createtime']
+                    address = sqlData.rows[key]['address']
+                    tasks = []
+                    dishs = []
+                }
+                dishs.push(sqlData.rows[key]['dname'])
             }
-            res.render('vendor_task', {
-                unfinished_task: unfinished_task,
-                finished_task: finished_task
-            })
+            tasks.push(cname)
+            tasks.push(createtime)
+            tasks.push(ttid)
+            tasks.push(address)
+            unfinished_tasks.push(tasks.concat(dishs))
+            // res.render('cus_history', {
+            //     unfinished_task: unfinished_task,
+            //     finished_task: finished_task
+            // })
         }
         return getTask(vid)
     })
     .then((sqlData) => {
         if (sqlData.rowCount) {
-            console.log(sqlData.rows)
-            // TODO: 怎么样返回
-            res.render('vendor_task', {
-                unfinished_task: unfinished_task,
-                finished_task: finished_task
-            })
-            unfinished_task = []
-            finished_task = []
+            let ttid = -1
+            let cname
+            let createtime
+            let address
+            let tasks = []
+            let dishs = []
+            for (var key in sqlData.rows) {
+                if (ttid != sqlData.rows[key]['ttid']) {
+                    if (ttid != -1) {
+                        tasks.push(cname)
+                        tasks.push(createtime)
+                        tasks.push(ttid)
+                        tasks.push(address)
+                        finished_tasks.push(tasks.concat(dishs))
+                    }
+                    ttid = sqlData.rows[key]['ttid']
+                    cname = sqlData.rows[key]['cname']
+                    createtime = sqlData.rows[key]['createtime']
+                    address = sqlData.rows[key]['address']
+                    tasks = []
+                    dishs = []
+                }
+                dishs.push(sqlData.rows[key]['dname'])
+            }
+            tasks.push(cname)
+            tasks.push(createtime)
+            tasks.push(ttid)
+            tasks.push(address)
+            finished_tasks.push(tasks.concat(dishs))
+            // res.render('cus_history', {
+            //     unfinished_task: unfinished_task,
+            //     finished_task: finished_task
+            // })
         }
         else{
-            res.send('orders error')
+            // res.send('no finished task')
         }
+        res.send([unfinished_tasks, finished_tasks])
     })
 }
