@@ -1,3 +1,2 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+<h1>还未达到起送价<%= fprice %>哦，不能下单</h1>
+<p><a href="/customer/detail?vname=<%= vname %>&fprice=<%= fprice %>" class="btn btn-primary" role="button" method="get">继续选购</a></p>

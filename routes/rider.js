@@ -7,5 +7,5 @@ router.get('/index', rid.index);
 // 查看订单信息
 router.get('/task', rid.task);
 // 接单
-router.post('/task/get', rid.get);
+router.get('/task/get', rid.get);
 module.exports = router;

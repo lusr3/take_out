@@ -12,45 +12,55 @@
         <h3><strong>未完成的订单</strong></h3>
     </div>
     <ul>
-            <div class="thumbnail">
-                <div class="caption text-center">
-                    <h3>在商家 <%= unfinished_task[0] %> 消费的订单</h3>
-                    <ul>
-                        <% var idx = 0; %>
-                        <% for(var i = 3; i < unfinished_task.length; i++){ %>
-                            <% idx = i - 2; %>
-                            <p>菜品 <%= idx %>：<%= unfinished_task[i] %></p>
-                        <% } %>
-                    </ul>
-                    <p>订单创建时间：<%= unfinished_task[1] %></p>
-                    <p><a href="/customer/history/confirm?ttid=<%= unfinished_task[2] %>" class="btn btn-primary" role="button" method="get">确认完成</a>
+        <div class="container">
+            <% for(var i = 0;i < unfinished_task.length; i++){ %>
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <div class="caption text-center">
+                        <h3>在商家 <%= unfinished_task[i][0] %> 消费的订单</h3>
+                        <ul>
+                            <% var idx = 0; %>
+                            <% for(var j = 4; j < unfinished_task[i].length; j++){ %>
+                                <% idx = j - 3; %>
+                                <p>菜品 <%= idx %>：<%= unfinished_task[i][j][0] %> —— <%= unfinished_task[i][j][1] %>元</p>
+                            <% } %>
+                        </ul>
+                        <p>总价格：<%= unfinished_task[i][3] %></p>
+                        <p>订单创建时间：<%= unfinished_task[i][1] %></p>
+                        <p><a href="/customer/history/confirm?ttid=<%= unfinished_task[i][2] %>" class="btn btn-primary" role="button" method="get">确认完成</a>
+                    </div>
                 </div>
             </div>
+            <% } %>
+        </div>
     </ul>
     <div class="caption text-center">
         <h3><strong>已完成的订单</strong></h3>
     </div>
-    <div class="col-md-9">
     <ul>
-        <div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-                <div class="caption text-center">
-                    <ul>
-                        <h3>在商家 <%= finished_task[0] %> 消费的订单</h3>
-                        <% var idx = 0; %>
-                        <% for(var i = 3; i < finished_task.length; i++){ %>
-                            <% idx = i - 2; %>
-                            <p>菜品 <%= idx %>：<%= finished_task[i] %></p>
-                        <% } %>
-                    </ul>
-                    <p>订单创建时间：<%= finished_task[1] %></p>
-                    <p>订单完成时间：<%= finished_task[2] %></p>
-                    <!-- <p><a href="/customer/history/confirm" class="btn btn-primary" role="button" method="get">确认完成</a> -->
+        <div class="container">
+            <% for(var i = 0;i < finished_task.length; i++){ %>
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <div class="caption text-center">
+                        <h3>在商家 <%= finished_task[i][0] %> 消费的订单</h3>
+                        <ul>
+                            <% var idx = 0; %>
+                            <% for(var j = 6; j < finished_task[i].length; j++){ %>
+                                <% idx = j - 5; %>
+                                <p>菜品 <%= idx %>：<%= finished_task[i][j][0] %> —— <%= finished_task[i][j][1] %>元</p>
+                            <% } %>
+                        </ul>
+                        <p>总价格：<%= finished_task[i][5] %></p>
+                        <p>订单创建时间：<%= finished_task[i][1] %></p>
+                        <p>订单完成时间：<%= finished_task[i][2] %></p>
+                        <p><a href="/customer/history/comment?ttid=<%= finished_task[i][4] %>&vid=<%= finished_task[i][3] %>" class="btn btn-primary" role="button" method="get">评论</a>
+                    </div>
                 </div>
             </div>
+            <% } %>
         </div>
     </ul>
-    </div>
 </body>
 <script src="/javascripts/jquery.min.js"></script>
 <script src="/javascripts/jquery.cookie.js"></script>

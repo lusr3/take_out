@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单记录</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+    <div class="caption text-center">
+        <h3><strong>可以接的订单</strong></h3>
+    </div>
+    <ul>
+        <div class="container">
+            <% for(var i = 0;i < unfinished_task.length; i++){ %>
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <div class="caption text-center">
+                        <h3>顾客 <%= unfinished_task[i][0] %> 的订单</h3>
+                        <ul>
+                            <% var idx = 0; %>
+                            <% for(var j = 4; j < unfinished_task[i].length; j++){ %>
+                                <% idx = j - 3; %>
+                                <p>菜品 <%= idx %>：<%= unfinished_task[i][j] %></p>
+                            <% } %>
+                        </ul>
+                        <p>送货地址：<%= unfinished_task[i][3] %></p>
+                        <p>订单创建时间：<%= unfinished_task[i][1] %></p>
+                        <p><a href="/rider/task/get?ttid=<%= unfinished_task[i][2] %>" class="btn btn-primary" role="button" method="get">接单</a>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </ul>
+    <div class="caption text-center">
+        <h3><strong>已完成的订单</strong></h3>
+    </div>
+    <ul>
+        <div class="container">
+            <% for(var i = 0;i < finished_task.length; i++){ %>
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <div class="caption text-center">
+                        <h3>顾客 <%= finished_task[i][0] %> 的订单</h3>
+                        <ul>
+                            <% var idx = 0; %>
+                            <% for(var j = 4; j < finished_task[i].length; j++){ %>
+                                <% idx = j - 3; %>
+                                <p>菜品 <%= idx %>：<%= finished_task[i][j] %></p>
+                            <% } %>
+                        </ul>
+                        <p>送货地址：<%= finished_task[i][3] %></p>
+                        <p>订单创建时间：<%= finished_task[i][1] %></p>
+                        <p>订单完成时间：<%= finished_task[i][2] %></p>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </ul>
+</body>
+<script src="/javascripts/jquery.min.js"></script>
+<script src="/javascripts/jquery.cookie.js"></script>
+<script src="/javascripts/bootstrap.min.js"></script>
+<script src="/javascripts/common.js"></script>
+</html>

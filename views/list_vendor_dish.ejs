@@ -10,7 +10,7 @@
 <body>
     <div class="col-md-9">
     <ul>
-        <% dish_items.forEach(function(item){%>
+        <% dish_items.forEach(function(item){ %>
         <div class="col-sm-6 col-md-4">
             <div class="thumbnail">
                 <img src="http://localhost:3000/<%= item.dpicture %>" alt="..." width="200" height="200">
@@ -39,7 +39,7 @@
         </ul>
         <p><strong>总价：<%= tol_price %>元</strong></p>
         <p><strong>起送价：<%= fprice %>元</strong></p>
-        <a href="/customer/detail/commit" class="btn btn-primary" role="button" method="get">提交订单</a>
+        <a href="/customer/detail/commit?vname=<%=vname%>&fprice=<%= fprice %>" class="btn btn-primary" role="button" method="get">提交订单</a>
     </div>
 
 </body>

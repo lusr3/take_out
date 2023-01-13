@@ -108,7 +108,7 @@ exports.task = function(req, res) {
             let ttid = -1
             let cname
             let createtime
-            let address
+            let tol_price
             let tasks = []
             let dishs = []
             for (var key in sqlData.rows) {
@@ -116,28 +116,25 @@ exports.task = function(req, res) {
                     if (ttid != -1) {
                         tasks.push(cname)
                         tasks.push(createtime)
-                        tasks.push(ttid)
-                        tasks.push(address)
+                        tasks.push(tol_price)
                         unfinished_tasks.push(tasks.concat(dishs))
                     }
                     ttid = sqlData.rows[key]['ttid']
                     cname = sqlData.rows[key]['cname']
                     createtime = sqlData.rows[key]['createtime']
-                    address = sqlData.rows[key]['address']
+                    tol_price = sqlData.rows[key]['tol_price']
                     tasks = []
                     dishs = []
                 }
-                dishs.push(sqlData.rows[key]['dname'])
+                temp = []
+                temp.push(sqlData.rows[key]['dname'])
+                temp.push(sqlData.rows[key]['price'])
+                dishs.push(temp)
             }
             tasks.push(cname)
             tasks.push(createtime)
-            tasks.push(ttid)
-            tasks.push(address)
+            tasks.push(tol_price)
             unfinished_tasks.push(tasks.concat(dishs))
-            // res.render('cus_history', {
-            //     unfinished_task: unfinished_task,
-            //     finished_task: finished_task
-            // })
         }
         return getTask(vid)
     })
@@ -146,7 +143,10 @@ exports.task = function(req, res) {
             let ttid = -1
             let cname
             let createtime
-            let address
+            let finishtime
+            let tol_price
+            let cwords
+            let grade
             let tasks = []
             let dishs = []
             for (var key in sqlData.rows) {
@@ -154,32 +154,40 @@ exports.task = function(req, res) {
                     if (ttid != -1) {
                         tasks.push(cname)
                         tasks.push(createtime)
-                        tasks.push(ttid)
-                        tasks.push(address)
+                        tasks.push(finishtime)
+                        tasks.push(tol_price)
+                        tasks.push(cwords)
+                        tasks.push(grade)
                         finished_tasks.push(tasks.concat(dishs))
                     }
                     ttid = sqlData.rows[key]['ttid']
                     cname = sqlData.rows[key]['cname']
                     createtime = sqlData.rows[key]['createtime']
-                    address = sqlData.rows[key]['address']
+                    finishtime = sqlData.rows[key]['finishtime']
+                    tol_price = sqlData.rows[key]['tol_price']
+                    cwords = sqlData.rows[key]['cwords']
+                    grade = sqlData.rows[key]['grade']
                     tasks = []
                     dishs = []
                 }
-                dishs.push(sqlData.rows[key]['dname'])
+                temp = []
+                temp.push(sqlData.rows[key]['dname'])
+                temp.push(sqlData.rows[key]['price'])
+                dishs.push(temp)
             }
             tasks.push(cname)
             tasks.push(createtime)
-            tasks.push(ttid)
-            tasks.push(address)
+            tasks.push(finishtime)
+            tasks.push(tol_price)
+            tasks.push(cwords)
+            tasks.push(grade)
             finished_tasks.push(tasks.concat(dishs))
-            // res.render('cus_history', {
-            //     unfinished_task: unfinished_task,
-            //     finished_task: finished_task
-            // })
         }
-        else{
-            // res.send('no finished task')
-        }
-        res.send([unfinished_tasks, finished_tasks])
+        res.render('vendor_task', {
+            unfinished_task: unfinished_tasks,
+            finished_task: finished_tasks
+        })
+        unfinished_tasks = []
+        finished_tasks = []
     })
 }

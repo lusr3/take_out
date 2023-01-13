@@ -28,13 +28,14 @@ const insertDishPic = (name, filepath) => {
 
 
 const getUnTask = (vid) => {
-    let sql = 'select cname, createtime, ttid, address, dname from task T natural join history H natural join dish D natural join customer C '
+    let sql = 'select cname, createtime, ttid, price, tol_price, dname from task T natural join history H natural join dish D natural join customer C '
     sql += `where T.vid='${vid}' and T.status<>2 order by createtime desc;`
     return execSql(sql)
 }
 
+// 这里一定要用左右连接，否则会出现没有评论就不显示的清空
 const getTask = (vid) => {
-    let sql = 'select cname, createtime, ttid, address, dname from task T natural join history H natural join dish D natural join customer C '
+    let sql = 'select cname, createtime, finishtime, T.ttid, price, tol_price, dname, cwords, grade from task T natural join history H natural join dish D natural join customer C left join comments CO on T.ttid=CO.ttid '
     sql += `where T.vid='${vid}' and T.status=2 order by createtime desc;`
     return execSql(sql)
 }

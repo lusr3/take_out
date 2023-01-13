@@ -70,13 +70,13 @@ const addHistory = (data) => {
 }
 
 const getUnHistory = (cid) => {
-    let sql = 'select vname, createtime, ttid, dname from task T natural join history H natural join dish D natural join vendor V '
+    let sql = 'select vname, createtime, ttid, dname, price, tol_price from task T natural join history H natural join dish D natural join vendor V '
     sql += `where T.cid='${cid}' and T.status<>2 order by createtime desc;`
     return execSql(sql)
 }
 
 const getHistory = (cid) => {
-    let sql = 'select vname, createtime, ttid, dname from task T natural join history H natural join dish D natural join vendor V '
+    let sql = 'select vname, createtime, finishtime, vid, ttid, dname, price, tol_price from task T natural join history H natural join dish D natural join vendor V '
     sql += `where T.cid='${cid}' and T.status=2 order by createtime desc;`
     return execSql(sql)
 }
@@ -89,6 +89,11 @@ const comment = (cid, ttid, vid, cwords, commenttime, grade) => {
 
 const getVid = (ttid) => {
     let sql = `select vid from history where ttid='${ttid}';`
+    return execSql(sql)
+}
+
+const checkStatus = (ttid) => {
+    let sql = `select status from task where ttid='${ttid}';`
     return execSql(sql)
 }
 
@@ -136,6 +141,7 @@ module.exports = {
     getHistory,
     comment,
     getVid,
+    checkStatus,
     confirm,
     updataGrade,
     updateSales,

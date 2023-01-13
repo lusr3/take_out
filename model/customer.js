@@ -1,4 +1,4 @@
-const { addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getUnHistory, getHistory, confirm, comment, updataGrade, listVendors, detailVendor, updateSales, getDishs } = require('../controller/customer')
+const { addDish, deleteDish, get_tol_price, get_all_order, addTask, addHistory, delete_order, get_ttid, getUnHistory, getHistory, checkStatus, confirm, comment, updataGrade, listVendors, detailVendor, updateSales, getDishs } = require('../controller/customer')
 const { currentTime } = require('../util/currentTime')
 const { detail } = require('../controller/user')
 
@@ -69,8 +69,8 @@ exports.detail = function(req, res) {
 
 exports.add = function(req, res) {
     const dname = req.query.dname
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const cid = req.session._id
+    // const cid = '哈哈哈'
     const promise = addDish(cid, dname)
     let tol_price
     promise.then((sqlData) => {
@@ -94,8 +94,8 @@ exports.add = function(req, res) {
         if (sqlData.rowCount) {
             choose_items = sqlData.rows
             total_price = tol_price
-            // res.redirect('/customer/detail?vname=' + req.query.vname + '&fprice=' + req.query.fprice)
-            res.send('success')
+            res.redirect('/customer/detail?vname=' + req.query.vname + '&fprice=' + req.query.fprice)
+            // res.send('success')
         }
         else{
             res.send('error')
@@ -105,8 +105,8 @@ exports.add = function(req, res) {
 
 exports.delete = function(req, res) {
     const dname = req.query.dname
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const cid = req.session._id
+    // const cid = '哈哈哈'
     const promise = deleteDish(cid, dname)
     let tol_price
     promise.then((sqlData) => {
@@ -132,30 +132,34 @@ exports.delete = function(req, res) {
         }
     })
     .then((sqlData) => {
-        // choose_items = sqlData.rows
-        // total_price = tol_price
-        // console.log('choose_items:', choose_items)
-        // console.log('total_price:', total_price)
-        // res.redirect('/customer/detail?vname=' + req.query.vname + '&fprice=' + req.query.fprice)
-        res.send('success')
+        choose_items = sqlData.rows
+        total_price = tol_price
+        console.log('choose_items:', choose_items)
+        console.log('total_price:', total_price)
+        res.redirect('/customer/detail?vname=' + req.query.vname + '&fprice=' + req.query.fprice)
+        // res.send('success')
     })
 }
 
 exports.commit = function(req, res) {
-    // const cid = req.session._id
-    const cid = '哈哈哈'
+    const cid = req.session._id
+    const fprice = req.query.fprice
+    const vname = req.query.vname
     let tol_price
     let orders
     let time
     const promise = get_tol_price(cid)
     // 得到总价格
     promise.then((sqlData) => {
-        if(sqlData.rowCount) {
-            tol_price = sqlData.rows[0].sum
+        tol_price = sqlData.rows[0].sum
+        if (tol_price >= fprice) {
             return get_all_order(cid)
         }
         else{
-            res.send('price error')
+            return res.render('error', {
+                fprice: fprice,
+                vname: vname
+            })
         }
     })
     // 得到当前所有点的菜(ttemp 里面的内容)
@@ -221,6 +225,7 @@ exports.commit = function(req, res) {
     })
 }
 
+
 exports.history = function(req, res) {
     const cid = req.session._id
     const promise = getUnHistory(cid)
@@ -233,67 +238,85 @@ exports.history = function(req, res) {
             let createtime
             let tasks = []
             let dishs = []
+            let tol_price = 0
             for (var key in sqlData.rows) {
                 if (ttid != sqlData.rows[key]['ttid']) {
                     if (ttid != -1) {
                         tasks.push(vname)
                         tasks.push(createtime)
                         tasks.push(ttid)
+                        tasks.push(tol_price)
                         unfinished_tasks.push(tasks.concat(dishs))
                     }
                     ttid = sqlData.rows[key]['ttid']
                     vname = sqlData.rows[key]['vname']
                     createtime = sqlData.rows[key]['createtime']
+                    tol_price = sqlData.rows[key]['tol_price']
                     tasks = []
                     dishs = []
                 }
-                dishs.push(sqlData.rows[key]['dname'])
+                temp = []
+                temp.push(sqlData.rows[key]['dname'])
+                temp.push(sqlData.rows[key]['price'])
+                dishs.push(temp)
             }
             tasks.push(vname)
             tasks.push(createtime)
             tasks.push(ttid)
+            tasks.push(tol_price)
             unfinished_tasks.push(tasks.concat(dishs))
-            // res.render('cus_history', {
-            //     unfinished_task: unfinished_task,
-            //     finished_task: finished_task
-            // })
         }
         return getHistory(cid)
     })
     .then((sqlData) => {
-        if (sqlData.rowCount || unfinished_task.length) {
+        if (sqlData.rowCount) {
             let ttid = -1
             let vname
             let createtime
+            let finishtime
+            let vid
             let tasks = []
             let dishs = []
+            let tol_price = 0
             for (var key in sqlData.rows) {
                 if (ttid != sqlData.rows[key]['ttid']) {
                     if (ttid != -1) {
                         tasks.push(vname)
                         tasks.push(createtime)
+                        tasks.push(finishtime)
+                        tasks.push(vid)
                         tasks.push(ttid)
+                        tasks.push(tol_price)
                         finished_tasks.push(tasks.concat(dishs))
                     }
                     ttid = sqlData.rows[key]['ttid']
                     vname = sqlData.rows[key]['vname']
                     createtime = sqlData.rows[key]['createtime']
+                    finishtime = sqlData.rows[key]['finishtime']
+                    vid = sqlData.rows[key]['vid']
+                    tol_price = sqlData.rows[key]['tol_price']
                     tasks = []
                     dishs = []
                 }
-                dishs.push(sqlData.rows[key]['dname'])
+                temp = []
+                temp.push(sqlData.rows[key]['dname'])
+                temp.push(sqlData.rows[key]['price'])
+                dishs.push(temp)
             }
             tasks.push(vname)
             tasks.push(createtime)
+            tasks.push(finishtime)
+            tasks.push(vid)
             tasks.push(ttid)
+            tasks.push(tol_price)
             finished_tasks.push(tasks.concat(dishs))
-            // TODO: 怎么样返回
-            // res.render('cus_history', {
-            //     unfinished_task: unfinished_task,
-            //     finished_task: finished_task
-            // })
-            res.send([unfinished_tasks, finished_tasks])
         }
+        res.render('cus_history', {
+            unfinished_task: unfinished_tasks,
+            finished_task: finished_tasks
+        })
+        unfinished_tasks = []
+        finished_tasks = []
     })
 }
 
@@ -308,7 +331,6 @@ exports.Gcomment = function(req, res) {
 
 exports.Pcomment = function(req, res) {
     const cid = req.session._id
-    // const cid = '哈哈哈'
     const ttid = req.query.ttid
     const vid = req.query.vid
     const cwords = req.body.cwords
@@ -325,7 +347,7 @@ exports.Pcomment = function(req, res) {
     })
     .then((sqlData) => {
         if (sqlData.rowCount) {
-            res.send('update success')
+            res.send('<script>alert("商家已收到您的评论"); window.location.href = "/customer/history"; </script>');
         }
         else{
             res.send('update fail')
@@ -335,9 +357,17 @@ exports.Pcomment = function(req, res) {
 
 exports.confirm = function(req, res) {
     const ttid = req.query.ttid
-    const promise = confirm(ttid, currentTime())
+    const promise = checkStatus(ttid)
     // 将订单状态修改为 2，添加完成时间
     promise.then((sqlData) => {
+        if (sqlData.rows[0]['status'] === '1') {
+            return confirm(ttid, currentTime())
+        }
+        else{
+            res.send('<script>alert("还没骑手接单呢，您咋就确认收货了"); window.location.href = "/user/login"; </script>');
+        }
+    })
+    .then((sqlData) => {
         if (sqlData.rowCount) {
             res.send('<script>alert("确认收货！"); window.location.href = "/user/login"; </script>');
         }

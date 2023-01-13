@@ -56,10 +56,6 @@ exports.task = function(req, res) {
             tasks.push(ttid)
             tasks.push(address)
             unfinished_tasks.push(tasks.concat(dishs))
-            // res.render('cus_history', {
-            //     unfinished_task: unfinished_task,
-            //     finished_task: finished_task
-            // })
         }
         return getFiTask(rid)
     })
@@ -68,6 +64,7 @@ exports.task = function(req, res) {
             let ttid = -1
             let cname
             let createtime
+            let finishtime
             let address
             let tasks = []
             let dishs = []
@@ -76,13 +73,14 @@ exports.task = function(req, res) {
                     if (ttid != -1) {
                         tasks.push(cname)
                         tasks.push(createtime)
-                        tasks.push(ttid)
+                        tasks.push(finishtime)
                         tasks.push(address)
                         finished_tasks.push(tasks.concat(dishs))
                     }
                     ttid = sqlData.rows[key]['ttid']
                     cname = sqlData.rows[key]['cname']
                     createtime = sqlData.rows[key]['createtime']
+                    finishtime = sqlData.rows[key]['finishtime']
                     address = sqlData.rows[key]['address']
                     tasks = []
                     dishs = []
@@ -91,29 +89,26 @@ exports.task = function(req, res) {
             }
             tasks.push(cname)
             tasks.push(createtime)
-            tasks.push(ttid)
+            tasks.push(finishtime)
             tasks.push(address)
             finished_tasks.push(tasks.concat(dishs))
-            // res.render('cus_history', {
-            //     unfinished_task: unfinished_task,
-            //     finished_task: finished_task
-            // })
         }
-        else{
-            // res.send('no finished task')
-        }
-        res.send([unfinished_tasks, finished_tasks])
+        res.render('rider_task', {
+            unfinished_task: unfinished_tasks,
+            finished_task: finished_tasks
+        })
+        unfinished_tasks = []
+        finished_tasks = []
     })
 }
 
 exports.get = function(req, res) {
-    // const rid = req.session._id
-    const rid = 'lwyyds3'
-    const ttid = req.body.ttid
+    const rid = req.session._id
+    const ttid = req.query.ttid
     const promise = getTask(rid, ttid)
     promise.then((sqlData) => {
         if (sqlData.rowCount) {
-            res.send('get task success')
+            res.send('<script>alert("接单成功"); window.location.href = "/user/login"; </script>');
         }
         else{
             res.send('get task fail')
