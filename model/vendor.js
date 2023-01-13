@@ -40,7 +40,9 @@ exports.list = function(req, res) {
             })
         }
         else{
-            res.send('no dishs now')
+            res.render('ven_list_dish', {
+                items: []
+            })
         }
     })
 }
